@@ -15,7 +15,8 @@ import {
   CircularProgress,
   Alert,
   Chip,
-  useTheme
+  useTheme,
+  ButtonGroup
 } from '@mui/material';
 
 const AlertSeverityBadge = ({ severity }) => {
@@ -234,6 +235,19 @@ const AlertCard = ({ alert }) => {
   );
 };
 
+// Sample data for quick demos
+const SAMPLE_ADDRESSES = [
+  "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  "0x28c6c06298d514db089934071355e5743bf21d60",
+  "0x21a31ee1afc51d94c2efccaa2092ad1028285549"
+];
+
+const SAMPLE_PROTOCOLS = [
+  "Uniswap",
+  "Aave",
+  "Compound"
+];
+
 const MonitoringDashboard = () => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -448,6 +462,14 @@ const MonitoringDashboard = () => {
     }, 3000);
   };
 
+  const handleLoadSampleAddress = (index = 0) => {
+    setAddressInput(SAMPLE_ADDRESSES[index % SAMPLE_ADDRESSES.length]);
+  };
+
+  const handleLoadSampleProtocol = (index = 0) => {
+    setProtocolInput(SAMPLE_PROTOCOLS[index % SAMPLE_PROTOCOLS.length]);
+  };
+
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
@@ -591,9 +613,33 @@ const MonitoringDashboard = () => {
             )}
             
             <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                Monitor Address
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Monitor Address
+                </Typography>
+                <Box>
+                  <ButtonGroup size="small" variant="outlined">
+                    <Button 
+                      onClick={() => handleLoadSampleAddress(0)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 1
+                    </Button>
+                    <Button 
+                      onClick={() => handleLoadSampleAddress(1)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 2
+                    </Button>
+                    <Button 
+                      onClick={() => handleLoadSampleAddress(2)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 3
+                    </Button>
+                  </ButtonGroup>
+                </Box>
+              </Box>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Receive alerts for suspicious activity related to a specific blockchain address.
               </Typography>
@@ -616,9 +662,33 @@ const MonitoringDashboard = () => {
             </Box>
             
             <Box>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                Monitor Protocol
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Monitor Protocol
+                </Typography>
+                <Box>
+                  <ButtonGroup size="small" variant="outlined">
+                    <Button 
+                      onClick={() => handleLoadSampleProtocol(0)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 1
+                    </Button>
+                    <Button 
+                      onClick={() => handleLoadSampleProtocol(1)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 2
+                    </Button>
+                    <Button 
+                      onClick={() => handleLoadSampleProtocol(2)}
+                      sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+                    >
+                      Sample 3
+                    </Button>
+                  </ButtonGroup>
+                </Box>
+              </Box>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Receive alerts for security news and vulnerabilities related to a specific protocol.
               </Typography>

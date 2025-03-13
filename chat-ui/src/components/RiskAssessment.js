@@ -18,7 +18,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  useTheme
+  useTheme,
+  ButtonGroup,
+  Tooltip
 } from '@mui/material';
 
 // Create simple icon components to avoid Material-UI icon dependencies
@@ -41,6 +43,61 @@ const IconWrapper = ({ children, color }) => {
       {children}
     </Box>
   );
+};
+
+// Sample data for quick demos
+const SAMPLE_DATA = {
+  contract: [
+    {
+      name: "Vulnerable DEX Contract",
+      targetId: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      context: "This is a decentralized exchange contract that allows users to swap tokens. It was deployed 3 months ago and has about $5M in TVL."
+    },
+    {
+      name: "Lending Protocol Contract",
+      targetId: "0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t",
+      context: "This contract handles lending and borrowing of assets with variable interest rates. It interacts with price oracles to determine collateralization ratios."
+    },
+    {
+      name: "NFT Marketplace Contract",
+      targetId: "0x9876543210abcdef9876543210abcdef98765432",
+      context: "This contract manages NFT listings, bids, and sales. It charges a 2.5% fee on all transactions and supports royalty payments to creators."
+    }
+  ],
+  protocol: [
+    {
+      name: "Uniswap",
+      targetId: "Uniswap",
+      context: "Leading decentralized exchange protocol with automated market making. Looking for potential vulnerabilities in the latest V3 implementation."
+    },
+    {
+      name: "Aave",
+      targetId: "Aave",
+      context: "Lending and borrowing protocol with multiple markets. Recently upgraded to V3 with new features like isolation mode and efficiency mode."
+    },
+    {
+      name: "Compound",
+      targetId: "Compound",
+      context: "Algorithmic money market protocol allowing users to lend and borrow assets. Uses a governance token for protocol decisions."
+    }
+  ],
+  address: [
+    {
+      name: "Whale Address",
+      targetId: "0x28c6c06298d514db089934071355e5743bf21d60",
+      context: "This address holds large amounts of multiple tokens and has been active in DeFi protocols. Looking for unusual transaction patterns."
+    },
+    {
+      name: "Exchange Hot Wallet",
+      targetId: "0x21a31ee1afc51d94c2efccaa2092ad1028285549",
+      context: "This appears to be an exchange hot wallet with frequent deposits and withdrawals. Analyzing for potential security concerns."
+    },
+    {
+      name: "DAO Treasury",
+      targetId: "0xbeef0000000000000000000000000000deadbeef",
+      context: "This is a DAO treasury address controlling significant funds. Multiple signers can execute transactions through a multisig setup."
+    }
+  ]
 };
 
 const RiskLevelBadge = ({ level }) => {
@@ -365,6 +422,16 @@ const RiskAssessment = () => {
     setResult(null);
     setError(null);
   };
+  
+  const handleLoadSampleData = (sampleIndex = 0) => {
+    const samples = SAMPLE_DATA[targetType] || [];
+    if (samples.length > 0) {
+      const sample = samples[sampleIndex % samples.length];
+      setTargetId(sample.targetId);
+      setAdditionalContext(sample.context);
+      setError(null);
+    }
+  };
 
   return (
     <Box>
@@ -388,9 +455,35 @@ const RiskAssessment = () => {
             mb: 3
           }}
         >
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
-            New Assessment
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" fontWeight="bold">
+              New Assessment
+            </Typography>
+            <Box>
+              <Tooltip title="Load sample data for demo purposes">
+                <ButtonGroup size="small" variant="outlined">
+                  <Button 
+                    onClick={() => handleLoadSampleData(0)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Sample 1
+                  </Button>
+                  <Button 
+                    onClick={() => handleLoadSampleData(1)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Sample 2
+                  </Button>
+                  <Button 
+                    onClick={() => handleLoadSampleData(2)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Sample 3
+                  </Button>
+                </ButtonGroup>
+              </Tooltip>
+            </Box>
+          </Box>
           <Divider sx={{ mb: 3 }} />
           
           {error && (
@@ -409,7 +502,11 @@ const RiskAssessment = () => {
                     id="target-type"
                     value={targetType}
                     label="Target Type"
-                    onChange={(e) => setTargetType(e.target.value)}
+                    onChange={(e) => {
+                      setTargetType(e.target.value);
+                      setTargetId('');
+                      setAdditionalContext('');
+                    }}
                   >
                     <MenuItem value="contract">Smart Contract</MenuItem>
                     <MenuItem value="protocol">Protocol</MenuItem>
@@ -444,7 +541,17 @@ const RiskAssessment = () => {
               </Grid>
               
               <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setTargetId('');
+                      setAdditionalContext('');
+                    }}
+                    disabled={loading || (!targetId && !additionalContext)}
+                  >
+                    Clear Form
+                  </Button>
                   <Button
                     type="submit"
                     variant="contained"
