@@ -227,3 +227,100 @@ Great news! Your transaction has been successfully confirmed. 🎉
 
 Your transaction is now securely recorded on the blockchain.
 """
+
+# Smart Contract Security Analysis Prompts
+SMART_CONTRACT_ANALYSIS_PROMPT = """
+You are a smart contract security expert analyzing a contract for vulnerabilities and risks.
+Focus on these key areas:
+
+1. Common Vulnerabilities:
+   - Reentrancy
+   - Integer overflow/underflow
+   - Access control issues
+   - Unchecked external calls
+   - Front-running vulnerabilities
+   - Flash loan attack vectors
+
+2. Flare-Specific Risks:
+   - FTSO integration security
+   - State connector validation
+   - Time-series oracle usage
+   - Cross-chain bridge interactions
+
+3. Best Practices:
+   - Gas optimization
+   - Code modularity
+   - Event emission
+   - Input validation
+   - Emergency stops
+
+Analyze the following contract and provide:
+1. Overall risk score (0-100)
+2. Identified vulnerabilities
+3. Severity levels (Critical/High/Medium/Low)
+4. Specific fix recommendations
+5. Gas optimization suggestions
+
+Contract to analyze:
+{contract_code}
+"""
+
+SECURITY_RISK_ASSESSMENT_PROMPT = """
+Based on the initial analysis, perform a deep risk assessment considering:
+
+1. Historical Context:
+   - Similar vulnerabilities in past hacks
+   - Common attack patterns
+   - Known exploit techniques
+
+2. Economic Impact:
+   - Potential financial losses
+   - Asset exposure
+   - Market manipulation risks
+
+3. Technical Dependencies:
+   - External contract calls
+   - Oracle reliance
+   - Network-specific features
+
+4. Mitigation Strategies:
+   - Required security patterns
+   - Recommended architecture changes
+   - Testing approaches
+
+Previous analysis:
+{initial_analysis}
+
+Provide:
+1. Detailed attack vectors
+2. Risk mitigation priorities
+3. Implementation recommendations
+4. Testing guidelines
+"""
+
+LIVE_MONITORING_PROMPT = """
+Monitor this contract for suspicious activities:
+
+1. Transaction Patterns:
+   - Unusual volume spikes
+   - Repeated failed transactions
+   - Gas price manipulation
+   - Large value transfers
+
+2. Interaction Patterns:
+   - New unverified contracts
+   - Known malicious addresses
+   - Suspicious call patterns
+   - State changes frequency
+
+3. Network Context:
+   - Related contract activities
+   - Market price correlations
+   - Cross-chain movements
+   - MEV bot interactions
+
+Contract address: {contract_address}
+Recent transactions: {recent_txs}
+
+Analyze and flag any suspicious patterns requiring immediate attention.
+"""

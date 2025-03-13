@@ -23,6 +23,7 @@ from flare_ai_defai import (
     PromptService,
     Vtpm,
 )
+from flare_ai_defai.api.contract_routes import router as contract_router
 from flare_ai_defai.settings import settings
 
 logger = structlog.get_logger(__name__)
@@ -40,7 +41,7 @@ def create_app() -> FastAPI:
        - FlareProvider for blockchain interactions
        - Vtpm for attestation services
        - PromptService for managing chat prompts
-    4. Sets up routing for chat endpoints
+    4. Sets up routing for chat and contract analysis endpoints
 
     Returns:
         FastAPI: Configured FastAPI application instance
@@ -55,7 +56,10 @@ def create_app() -> FastAPI:
         - simulate_attestation: Boolean flag for attestation simulation
     """
     app = FastAPI(
-        title="AI Agent API", version=settings.api_version, redirect_slashes=False
+        title="FlareSense API",
+        description="AI-powered DeFi security analysis and monitoring",
+        version=settings.api_version,
+        redirect_slashes=False,
     )
 
     # Configure CORS middleware with settings from configuration
@@ -75,8 +79,14 @@ def create_app() -> FastAPI:
         prompts=PromptService(),
     )
 
-    # Register chat routes with API
+    # Register routes with API
     app.include_router(chat.router, prefix="/api/routes/chat", tags=["chat"])
+    app.include_router(
+        contract_router,
+        prefix="/api/routes/contracts",
+        tags=["smart-contracts"],
+    )
+
     return app
 
 
@@ -89,7 +99,7 @@ def start() -> None:
 
     This function initializes and runs the uvicorn server with the configuration:
     - Host: 0.0.0.0 (accessible from all network interfaces)
-    - Port: 8000 (default HTTP port for the application)
+    - Port: 8080 (default HTTP port for the application)
     - App: The FastAPI application instance
 
     Note:
