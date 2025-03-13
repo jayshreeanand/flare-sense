@@ -12,9 +12,14 @@ Dependencies:
     - Custom providers for AI, blockchain, and attestation services
 """
 
+import os
+from pathlib import Path
+
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from flare_ai_defai import (
     ChatRouter,
@@ -56,10 +61,9 @@ def create_app() -> FastAPI:
         - simulate_attestation: Boolean flag for attestation simulation
     """
     app = FastAPI(
-        title="FlareSense API",
-        description="AI-powered DeFi security analysis and monitoring",
+        title="Flare AI DeFi API",
+        description="AI-powered smart contract security analysis",
         version=settings.api_version,
-        redirect_slashes=False,
     )
 
     # Configure CORS middleware with settings from configuration
@@ -70,6 +74,12 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Health check endpoint
+    @app.get("/health")
+    async def health_check() -> dict:
+        """Health check endpoint."""
+        return {"status": "healthy"}
 
     # Initialize router with service providers
     chat = ChatRouter(
@@ -86,6 +96,20 @@ def create_app() -> FastAPI:
         prefix="/api/routes/contracts",
         tags=["smart-contracts"],
     )
+
+    # Serve static files from React build
+    static_dir = Path("chat-ui/build")
+    if static_dir.exists():
+        app.mount("/static", StaticFiles(directory=str(static_dir / "static")), name="static")
+        app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets")
+
+        @app.get("/{full_path:path}")
+        async def serve_react_app(full_path: str):
+            """Serve the React frontend."""
+            static_file = static_dir / full_path
+            if static_file.exists():
+                return FileResponse(str(static_file))
+            return FileResponse(str(static_dir / "index.html"))
 
     return app
 

@@ -404,7 +404,8 @@ const ContractAnalysis = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Analysis failed');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Analysis failed');
       }
 
       const result = await response.json();

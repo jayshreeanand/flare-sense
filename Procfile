@@ -1,1 +1,1 @@
-web: cd chat-ui && npm start 
+web: cd chat-ui && npm run build && cd .. && uv run start-backend 

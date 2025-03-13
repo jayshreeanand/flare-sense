@@ -1,0 +1,12 @@
+[build]
+builder = "nixpacks"
+buildCommand = "cd chat-ui && npm install && npm run build && cd .. && pip install -e ."
+
+[deploy]
+startCommand = "uv run start-backend"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+
+[env]
+PYTHON_VERSION = "3.11" 
