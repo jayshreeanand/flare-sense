@@ -85,12 +85,16 @@ ENV PYTHONPATH=/app/src \
     PYTHONDONTWRITEBYTECODE=1
 
 # Create required directories and set permissions
-RUN mkdir -p /var/log/nginx /var/log/supervisor /run/nginx && \
+RUN mkdir -p /var/log/nginx /var/log/supervisor /run/nginx /var/run && \
+    touch /var/log/supervisor/supervisord.log && \
+    touch /var/run/supervisor.sock && \
     chown -R www-data:www-data /var/log/nginx && \
     chown -R www-data:www-data /usr/share/nginx/html && \
-    chown -R www-data:www-data /var/log/supervisor && \
+    chown -R root:root /var/log/supervisor && \
+    chown -R root:root /var/run/supervisor.sock && \
     chown -R www-data:www-data /run/nginx && \
-    chmod -R 755 /var/log/nginx /var/log/supervisor /run/nginx
+    chmod -R 755 /var/log/nginx /var/log/supervisor /run/nginx && \
+    chmod 700 /var/run/supervisor.sock
 
 # Create health check file
 RUN echo "OK" > /usr/share/nginx/html/health.html
@@ -98,5 +102,5 @@ RUN echo "OK" > /usr/share/nginx/html/health.html
 # Expose ports
 EXPOSE 80 8000
 
-# Start supervisor with proper logging
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "--nodaemon", "--logfile", "/dev/stdout", "--loglevel", "debug"]
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
