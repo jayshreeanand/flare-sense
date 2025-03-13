@@ -6,10 +6,9 @@ dockerfilePath = "Dockerfile"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
-startCommand = "NONE"
 
 [env]
-PYTHON_VERSION = "3.11"
+PYTHON_VERSION = "3.12"
 NODE_VERSION = "16.20.0"
 NPM_VERSION = "8.19.4"
 GEMINI_MODEL = "gemini-2.0-flash"

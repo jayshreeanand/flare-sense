@@ -1,4 +1,4 @@
-FROM python:3.11-slim as backend-builder
+FROM python:3.12-slim as backend-builder
 
 WORKDIR /flare-ai-defai
 
@@ -47,7 +47,7 @@ COPY chat-ui/ .
 # Build frontend with production optimization
 RUN npm run build --production
 
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -85,13 +85,18 @@ ENV PYTHONPATH=/app/src \
     PYTHONDONTWRITEBYTECODE=1
 
 # Create required directories and set permissions
-RUN mkdir -p /var/log/nginx /var/log/supervisor && \
+RUN mkdir -p /var/log/nginx /var/log/supervisor /run/nginx && \
     chown -R www-data:www-data /var/log/nginx && \
     chown -R www-data:www-data /usr/share/nginx/html && \
-    chown -R www-data:www-data /var/log/supervisor
+    chown -R www-data:www-data /var/log/supervisor && \
+    chown -R www-data:www-data /run/nginx && \
+    chmod -R 755 /var/log/nginx /var/log/supervisor /run/nginx
+
+# Create health check file
+RUN echo "OK" > /usr/share/nginx/html/health.html
 
 # Expose ports
 EXPOSE 80 8000
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start supervisor with proper logging
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "--nodaemon", "--logfile", "/dev/stdout", "--loglevel", "debug"]
