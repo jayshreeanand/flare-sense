@@ -30,6 +30,7 @@ from flare_ai_defai import (
 )
 from flare_ai_defai.api.contract_routes import router as contract_router
 from flare_ai_defai.api.monitoring_routes import router as monitoring_router
+from flare_ai_defai.api.risk_assessment_routes import router as risk_assessment_router
 from flare_ai_defai.monitoring import (
     AlertService,
     BlockchainMonitor,
@@ -137,8 +138,8 @@ def create_app() -> FastAPI:
         - simulate_attestation: Boolean flag for attestation simulation
     """
     app = FastAPI(
-        title="FlareSense API",
-        description="AI-powered DeFi security analysis and monitoring",
+        title="Flare AI Agent API",
+        description="API for interacting with the Flare AI Agent",
         version=settings.api_version,
         redirect_slashes=False,
         lifespan=lifespan,
@@ -210,13 +211,18 @@ def create_app() -> FastAPI:
     app.include_router(chat.router, prefix="/api/routes/chat", tags=["chat"])
     app.include_router(
         contract_router,
-        prefix="/api/routes/contracts",
-        tags=["smart-contracts"],
+        prefix="/api/routes/contract",
+        tags=["Contract Analysis"],
     )
     app.include_router(
         monitoring_router,
         prefix="/api/routes/monitoring",
-        tags=["monitoring"],
+        tags=["Monitoring"],
+    )
+    app.include_router(
+        risk_assessment_router,
+        prefix="/api/routes/risk-assessment",
+        tags=["Risk Assessment"],
     )
 
     return app

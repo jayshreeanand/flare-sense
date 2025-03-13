@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     gemini_api_key: Annotated[str, Field(min_length=1, alias="GEMINI_API_KEY")]
     # The Gemini model identifier to use
     gemini_model: str = Field(default="gemini-2.0-flash", alias="GEMINI_MODEL")
+    # API key for accessing OpenRouter AI service (optional)
+    openrouter_api_key: str = Field(default="", alias="OPENROUTER_API_KEY")
     # API version to use at the backend
     api_version: str = Field(default="0.1.0", alias="API_VERSION")
     # URL for the Flare Network RPC provider

@@ -74,6 +74,7 @@ const DashboardLayout = ({ children, currentPage, onPageChange, onBackToLanding 
     { text: 'Contract Analysis', icon: <SecurityIcon />, value: 'contract-analysis' },
     { text: 'Activity Monitoring', icon: <MonitorIcon />, value: 'activity-monitoring' },
     { text: 'Blockchain Monitoring', icon: <AnalyticsIcon />, value: 'blockchain-monitoring' },
+    { text: 'Risk Assessment', icon: <Box component="span" sx={{ fontSize: '1.5rem' }}>🛡️</Box>, value: 'risk-assessment' },
     { text: 'Chat Assistant', icon: <ChatIcon />, value: 'chat' },
   ];
 

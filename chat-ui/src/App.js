@@ -8,6 +8,7 @@ import {
 import ContractAnalysis from './components/ContractAnalysis';
 import ContractMonitoring from './components/ContractMonitoring';
 import MonitoringDashboard from './components/MonitoringDashboard';
+import RiskAssessment from './components/RiskAssessment';
 import Chat from './components/Chat';
 import LandingPage from './components/LandingPage';
 import DashboardLayout from './components/DashboardLayout';
@@ -100,6 +101,8 @@ function App() {
         return <ContractMonitoring />;
       case 'blockchain-monitoring':
         return <MonitoringDashboard />;
+      case 'risk-assessment':
+        return <RiskAssessment />;
       case 'chat':
         return <Chat />;
       default:
