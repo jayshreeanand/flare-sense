@@ -21,12 +21,6 @@ from flare_ai_defai.prompts.templates import (
 
 logger = structlog.get_logger(__name__)
 
-# Type aliases
-VulnerabilityList: TypeAlias = list[Vulnerability]
-GasSuggestionList: TypeAlias = list[str]
-MonitoringResult: TypeAlias = list[dict]
-
-
 class Severity(str, Enum):
     """Severity levels for identified vulnerabilities."""
 
@@ -45,6 +39,12 @@ class Vulnerability:
     severity: Severity
     location: str | None  # File and line number if available
     fix_recommendation: str
+
+
+# Type aliases
+VulnerabilityList: TypeAlias = list[Vulnerability]
+GasSuggestionList: TypeAlias = list[str]
+MonitoringResult: TypeAlias = list[dict]
 
 
 @dataclass
