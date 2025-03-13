@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 import {
   CssBaseline,
@@ -59,12 +59,34 @@ function App() {
   // State to track current page in dashboard
   const [currentPage, setCurrentPage] = useState('dashboard');
 
+  // Check if there's a saved state in localStorage
+  useEffect(() => {
+    const savedDashboardState = localStorage.getItem('showDashboard');
+    const savedCurrentPage = localStorage.getItem('currentPage');
+    
+    if (savedDashboardState === 'true') {
+      setShowDashboard(true);
+    }
+    
+    if (savedCurrentPage) {
+      setCurrentPage(savedCurrentPage);
+    }
+  }, []);
+
   const handleGetStarted = () => {
     setShowDashboard(true);
+    localStorage.setItem('showDashboard', 'true');
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    localStorage.setItem('currentPage', page);
+  };
+  
+  // Function to go back to landing page
+  const handleBackToLanding = () => {
+    setShowDashboard(false);
+    localStorage.removeItem('showDashboard');
   };
 
   // Render the appropriate component based on the current page
@@ -93,6 +115,7 @@ function App() {
         <DashboardLayout 
           currentPage={currentPage} 
           onPageChange={handlePageChange}
+          onBackToLanding={handleBackToLanding}
         >
           {renderCurrentPage()}
         </DashboardLayout>

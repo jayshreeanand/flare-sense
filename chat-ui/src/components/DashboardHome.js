@@ -12,38 +12,53 @@ import {
   Button,
   useTheme
 } from '@mui/material';
-import SecurityIcon from '@mui/icons-material/Security';
-import WarningIcon from '@mui/icons-material/Warning';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import ErrorIcon from '@mui/icons-material/Error';
-import InfoIcon from '@mui/icons-material/Info';
+
+// Create simple icon components to avoid Material-UI icon dependencies
+const IconWrapper = ({ children, color }) => {
+  return (
+    <Box 
+      sx={{ 
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        bgcolor: `${color}15`,
+        color: color,
+        fontSize: '1.5rem',
+        fontWeight: 'bold'
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
 
 // Mock data for the dashboard
 const summaryData = [
   { 
     title: 'Monitored Addresses', 
     value: '3', 
-    icon: <AccountBalanceWalletIcon fontSize="large" />,
+    icon: <IconWrapper color="#1976d2">👛</IconWrapper>,
     color: '#1976d2'
   },
   { 
     title: 'Monitored Protocols', 
     value: '5', 
-    icon: <SecurityIcon fontSize="large" />,
+    icon: <IconWrapper color="#2e7d32">🔒</IconWrapper>,
     color: '#2e7d32'
   },
   { 
     title: 'Active Alerts', 
     value: '2', 
-    icon: <WarningIcon fontSize="large" />,
+    icon: <IconWrapper color="#ed6c02">⚠️</IconWrapper>,
     color: '#ed6c02'
   },
   { 
     title: 'Blockchain Activity', 
     value: '+12%', 
-    icon: <TrendingUpIcon fontSize="large" />,
+    icon: <IconWrapper color="#9c27b0">📈</IconWrapper>,
     color: '#9c27b0'
   },
 ];
@@ -113,13 +128,13 @@ const SummaryCard = ({ title, value, icon, color }) => {
 const getSeverityIcon = (severity) => {
   switch (severity) {
     case 'high':
-      return <ErrorIcon sx={{ color: '#d32f2f' }} />;
+      return <Box sx={{ color: '#d32f2f', fontSize: '1.2rem' }}>🔴</Box>;
     case 'medium':
-      return <WarningIcon sx={{ color: '#ed6c02' }} />;
+      return <Box sx={{ color: '#ed6c02', fontSize: '1.2rem' }}>🟠</Box>;
     case 'low':
-      return <InfoIcon sx={{ color: '#0288d1' }} />;
+      return <Box sx={{ color: '#0288d1', fontSize: '1.2rem' }}>🔵</Box>;
     default:
-      return <InfoIcon sx={{ color: '#0288d1' }} />;
+      return <Box sx={{ color: '#0288d1', fontSize: '1.2rem' }}>🔵</Box>;
   }
 };
 
@@ -171,7 +186,7 @@ const DashboardHome = () => {
               </Typography>
               <Button 
                 variant="text" 
-                endIcon={<MoreHorizIcon />}
+                endIcon={<Box component="span" sx={{ fontSize: '1.2rem' }}>⋯</Box>}
                 size="small"
               >
                 View All
@@ -228,7 +243,7 @@ const DashboardHome = () => {
               </Typography>
               <Button 
                 variant="text" 
-                endIcon={<MoreHorizIcon />}
+                endIcon={<Box component="span" sx={{ fontSize: '1.2rem' }}>⋯</Box>}
                 size="small"
               >
                 Manage

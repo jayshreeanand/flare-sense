@@ -63,6 +63,64 @@ const LandingPage = ({ onGetStarted }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
+  // Create a CSS-based dashboard preview
+  const DashboardPreview = () => (
+    <Box
+      sx={{
+        width: '100%',
+        height: 400,
+        borderRadius: 3,
+        background: 'linear-gradient(135deg, #2196f3 0%, #512da8 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        boxShadow: '0 15px 50px rgba(0,0,0,0.3)',
+        transform: 'perspective(1000px) rotateY(-10deg) rotateX(5deg)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <Box sx={{ position: 'absolute', top: 20, left: 20, right: 20 }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          FlareSense Dashboard
+        </Typography>
+        <Box sx={{ height: 10, width: '70%', bgcolor: 'rgba(255,255,255,0.2)', borderRadius: 1, mb: 2 }} />
+        <Box sx={{ height: 10, width: '50%', bgcolor: 'rgba(255,255,255,0.2)', borderRadius: 1, mb: 2 }} />
+        
+        <Grid container spacing={2} sx={{ mt: 3 }}>
+          {[1, 2, 3, 4].map((item) => (
+            <Grid item xs={6} key={item}>
+              <Box sx={{ 
+                height: 80, 
+                bgcolor: 'rgba(255,255,255,0.1)', 
+                borderRadius: 2,
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}>
+                <Box sx={{ height: 8, width: '60%', bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
+                <Box sx={{ height: 20, width: '40%', bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+        
+        <Box sx={{ mt: 3 }}>
+          <Box sx={{ height: 100, bgcolor: 'rgba(255,255,255,0.1)', borderRadius: 2 }} />
+        </Box>
+      </Box>
+    </Box>
+  );
+  
+  const handleGetStarted = () => {
+    // Scroll to top before transitioning to dashboard
+    window.scrollTo(0, 0);
+    // Call the onGetStarted prop to transition to dashboard
+    onGetStarted();
+  };
+  
   return (
     <Box>
       {/* Hero Section */}
@@ -129,7 +187,7 @@ const LandingPage = ({ onGetStarted }) => {
               <Button 
                 variant="contained" 
                 size="large"
-                onClick={onGetStarted}
+                onClick={handleGetStarted}
                 endIcon={<ArrowForwardIcon />}
                 sx={{ 
                   py: 1.5,
@@ -146,17 +204,8 @@ const LandingPage = ({ onGetStarted }) => {
               </Button>
             </Grid>
             <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Box 
-                component="img"
-                src="https://via.placeholder.com/600x400?text=FlareSense+Dashboard"
-                alt="FlareSense Dashboard"
-                sx={{ 
-                  width: '100%',
-                  borderRadius: 3,
-                  boxShadow: '0 15px 50px rgba(0,0,0,0.3)',
-                  transform: 'perspective(1000px) rotateY(-10deg) rotateX(5deg)',
-                }}
-              />
+              {/* Use the CSS-based dashboard preview */}
+              <DashboardPreview />
             </Grid>
           </Grid>
         </Container>
@@ -254,7 +303,7 @@ const LandingPage = ({ onGetStarted }) => {
             <Button 
               variant="contained" 
               size="large"
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               endIcon={<ArrowForwardIcon />}
               sx={{ 
                 py: 1.5,

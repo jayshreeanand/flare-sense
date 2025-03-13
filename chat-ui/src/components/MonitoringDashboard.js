@@ -17,13 +17,6 @@ import {
   Chip,
   useTheme
 } from '@mui/material';
-import WarningIcon from '@mui/icons-material/Warning';
-import ErrorIcon from '@mui/icons-material/Error';
-import InfoIcon from '@mui/icons-material/Info';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import SecurityIcon from '@mui/icons-material/Security';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 const AlertSeverityBadge = ({ severity }) => {
   const theme = useTheme();
@@ -34,25 +27,25 @@ const AlertSeverityBadge = ({ severity }) => {
         return {
           bg: theme.palette.error.light,
           text: theme.palette.error.dark,
-          icon: <ErrorIcon fontSize="small" sx={{ mr: 0.5 }} />
+          icon: '🔴'
         };
       case 'medium':
         return {
           bg: theme.palette.warning.light,
           text: theme.palette.warning.dark,
-          icon: <WarningIcon fontSize="small" sx={{ mr: 0.5 }} />
+          icon: '⚠️'
         };
       case 'low':
         return {
           bg: theme.palette.info.light,
           text: theme.palette.info.dark,
-          icon: <InfoIcon fontSize="small" sx={{ mr: 0.5 }} />
+          icon: 'ℹ️'
         };
       default:
         return {
           bg: theme.palette.grey[100],
           text: theme.palette.grey[800],
-          icon: <InfoIcon fontSize="small" sx={{ mr: 0.5 }} />
+          icon: 'ℹ️'
         };
     }
   };
@@ -61,7 +54,7 @@ const AlertSeverityBadge = ({ severity }) => {
 
   return (
     <Chip
-      icon={icon}
+      icon={<Box component="span" sx={{ mr: 0.5, fontSize: '1rem' }}>{icon}</Box>}
       label={severity.toUpperCase()}
       size="small"
       sx={{
@@ -83,37 +76,37 @@ const AlertTypeIcon = ({ type }) => {
     switch (type.toLowerCase()) {
       case 'whale_transaction':
         return {
-          icon: <MonetizationOnIcon />,
+          icon: '🐋',
           color: theme.palette.primary.main,
           bg: `${theme.palette.primary.main}15`
         };
       case 'unusual_activity':
         return {
-          icon: <VisibilityIcon />,
+          icon: '👁️',
           color: theme.palette.warning.main,
           bg: `${theme.palette.warning.main}15`
         };
       case 'vulnerable_contract':
         return {
-          icon: <SecurityIcon />,
+          icon: '🔓',
           color: theme.palette.error.main,
           bg: `${theme.palette.error.main}15`
         };
       case 'security_news':
         return {
-          icon: <NewReleasesIcon />,
+          icon: '📰',
           color: theme.palette.info.main,
           bg: `${theme.palette.info.main}15`
         };
       case 'protocol_compromise':
         return {
-          icon: <ErrorIcon />,
+          icon: '🚨',
           color: theme.palette.error.main,
           bg: `${theme.palette.error.main}15`
         };
       default:
         return {
-          icon: <InfoIcon />,
+          icon: 'ℹ️',
           color: theme.palette.grey[700],
           bg: theme.palette.grey[100]
         };
@@ -132,7 +125,8 @@ const AlertTypeIcon = ({ type }) => {
         borderRadius: 2,
         bgcolor: bg,
         color: color,
-        mr: 2
+        mr: 2,
+        fontSize: '1.5rem'
       }}
     >
       {icon}

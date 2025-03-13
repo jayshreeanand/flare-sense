@@ -17,7 +17,8 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Badge
+  Badge,
+  Tooltip
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -30,10 +31,11 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
 
 const drawerWidth = 260;
 
-const DashboardLayout = ({ children, currentPage, onPageChange }) => {
+const DashboardLayout = ({ children, currentPage, onPageChange, onBackToLanding }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(!isMobile);
@@ -58,6 +60,13 @@ const DashboardLayout = ({ children, currentPage, onPageChange }) => {
 
   const handleNotificationMenuClose = () => {
     setNotificationAnchorEl(null);
+  };
+  
+  const handleLogout = () => {
+    handleProfileMenuClose();
+    if (onBackToLanding) {
+      onBackToLanding();
+    }
   };
 
   const menuItems = [
@@ -92,6 +101,16 @@ const DashboardLayout = ({ children, currentPage, onPageChange }) => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             FlareSense
           </Typography>
+          
+          <Tooltip title="Back to Home">
+            <IconButton 
+              color="inherit" 
+              onClick={onBackToLanding}
+              sx={{ mr: 1 }}
+            >
+              <HomeIcon />
+            </IconButton>
+          </Tooltip>
           
           <IconButton 
             color="inherit" 
@@ -141,7 +160,7 @@ const DashboardLayout = ({ children, currentPage, onPageChange }) => {
           <ListItemText>Settings</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleProfileMenuClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
