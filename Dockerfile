@@ -7,6 +7,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
+    git \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only dependency files first
@@ -15,24 +17,35 @@ COPY pyproject.toml README.md ./
 # Create src directory and copy files
 COPY src/ src/
 
-# Install dependencies
-RUN pip install --no-cache-dir -e .
+# Install dependencies with verbose output and error logging
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir wheel setuptools && \
+    pip install --no-cache-dir -v -e . 2>&1 | tee pip_install.log || (cat pip_install.log && exit 1)
 
 FROM node:16.20.0-slim as frontend-builder
 
 WORKDIR /frontend
 
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy package files first
 COPY chat-ui/package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with increased memory limit and production only
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+RUN npm ci --only=production --no-audit --no-optional
 
 # Copy the rest of the frontend code
 COPY chat-ui/ .
 
-# Build frontend
-RUN npm run build
+# Build frontend with production optimization
+RUN npm run build --production
 
 FROM python:3.11-slim
 
@@ -55,7 +68,8 @@ COPY --from=backend-builder /flare-ai-defai/README.md .
 COPY --from=frontend-builder /frontend/build /usr/share/nginx/html
 
 # Install backend dependencies
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -v -e . 2>&1 | tee pip_install.log || (cat pip_install.log && exit 1)
 
 # Configure nginx
 COPY nginx.conf /etc/nginx/sites-enabled/default
@@ -66,13 +80,15 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Set environment variables
 ENV PYTHONPATH=/app/src \
     PORT=8000 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHONOPTIMIZE=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-# Create required directories
-RUN mkdir -p /var/log/nginx && \
-    mkdir -p /var/log/supervisor && \
+# Create required directories and set permissions
+RUN mkdir -p /var/log/nginx /var/log/supervisor && \
     chown -R www-data:www-data /var/log/nginx && \
-    chown -R www-data:www-data /usr/share/nginx/html
+    chown -R www-data:www-data /usr/share/nginx/html && \
+    chown -R www-data:www-data /var/log/supervisor
 
 # Expose ports
 EXPOSE 80 8000
