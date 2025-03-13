@@ -105,6 +105,60 @@ Flare AI DeFAI is composed of a Python-based backend and a JavaScript frontend. 
    npm start
    ```
 
+## Common Errors and Solutions
+
+### Import Error: Cannot import name 'ChatRouter' from 'flare_ai_defai.api'
+
+If you encounter this error when starting the backend:
+
+```
+ImportError: cannot import name 'ChatRouter' from 'flare_ai_defai.api' (/app/src/flare_ai_defai/api/__init__.py)
+```
+
+This is caused by a missing export in the API module. To fix it:
+
+1. Edit the file `/src/flare_ai_defai/api/__init__.py`:
+
+```python
+"""
+API Module
+
+This module provides API routes for the Flare AI Agent.
+"""
+
+from fastapi import APIRouter
+from flare_ai_defai.api.routes.chat import ChatRouter
+from flare_ai_defai.api.contract_routes import router as contract_router
+from flare_ai_defai.api.monitoring_routes import router as monitoring_router
+from flare_ai_defai.api.risk_assessment_routes import router as risk_assessment_router
+
+# Create a combined router
+router = APIRouter()
+router.include_router(contract_router)
+router.include_router(monitoring_router)
+router.include_router(risk_assessment_router)
+
+__all__ = [
+    "ChatRouter",
+    "contract_router",
+    "monitoring_router",
+    "risk_assessment_router",
+    "router"
+]
+```
+
+This ensures that both `ChatRouter` and `router` are properly exported from the API module.
+
+### Blockchain Monitoring Error: POA Chain
+
+If you see errors like:
+
+```
+Error in blockchain monitoring error="The field extraData is 80 bytes, but should be 32. It is quite likely that you are connected to a POA chain."
+```
+
+This is because the Web3 library needs to be configured with the proper middleware for Proof of Authority chains like Flare. This is a known issue and doesn't affect the core functionality of the application.
+
 ## 📁 Repo Structure
 
 ```plaintext
