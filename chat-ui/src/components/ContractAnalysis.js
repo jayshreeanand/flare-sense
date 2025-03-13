@@ -21,8 +21,11 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  useTheme,
+  alpha,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { motion } from 'framer-motion';
 
 const severityColors = {
   CRITICAL: '#ff1744',
@@ -34,61 +37,73 @@ const severityColors = {
 const StyledCard = styled(Card)(({ theme }) => ({
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(2),
+  borderRadius: '16px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
+  },
 }));
 
-const RiskScore = styled(Box)(({ theme, score }) => ({
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '12px',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.02),
+    },
+    '&.Mui-focused': {
+      boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
+    },
+  },
+}));
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  borderRadius: '12px',
+  '& .MuiOutlinedInput-notchedOutline': {
+    transition: 'all 0.2s ease-in-out',
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.primary.main,
+  },
+}));
+
+const AnalyzeButton = styled(Button)(({ theme }) => ({
+  borderRadius: '12px',
+  padding: '12px 32px',
+  fontSize: '1.1rem',
+  textTransform: 'none',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  transition: 'all 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-1px)',
+    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)',
+  },
+}));
+
+const RiskScore = styled(motion.div)(({ theme, score }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: theme.spacing(2),
+  padding: theme.spacing(4),
   backgroundColor: (() => {
-    if (score >= 75) return '#ffebee';
-    if (score >= 50) return '#fff3e0';
-    if (score >= 25) return '#f1f8e9';
-    return '#e8f5e9';
+    if (score >= 75) return alpha('#ff1744', 0.1);
+    if (score >= 50) return alpha('#f50057', 0.1);
+    if (score >= 25) return alpha('#ff9100', 0.1);
+    return alpha('#00c853', 0.1);
   })(),
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: '20px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+  backdropFilter: 'blur(8px)',
 }));
 
-const MarkdownContent = styled(Box)(({ theme }) => ({
-  '& h1, & h2, & h3, & h4, & h5, & h6': {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-    fontWeight: 600,
-  },
-  '& h1': { fontSize: '2rem' },
-  '& h2': { fontSize: '1.8rem' },
-  '& h3': { fontSize: '1.6rem' },
-  '& h4': { fontSize: '1.4rem' },
-  '& h5': { fontSize: '1.2rem' },
-  '& h6': { fontSize: '1.1rem' },
-  '& p': {
-    marginBottom: theme.spacing(2),
-    lineHeight: 1.6,
-  },
-  '& ul, & ol': {
-    marginBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(3),
-  },
-  '& li': {
-    marginBottom: theme.spacing(1),
-  },
-  '& code': {
-    backgroundColor: theme.palette.grey[100],
-    padding: theme.spacing(0.5, 1),
-    borderRadius: theme.shape.borderRadius,
-    fontFamily: 'monospace',
-  },
-  '& pre': {
-    backgroundColor: theme.palette.grey[100],
-    padding: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-    overflowX: 'auto',
-    '& code': {
-      backgroundColor: 'transparent',
-      padding: 0,
-    },
-  },
+const VulnerabilityCard = styled(motion.div)(({ theme }) => ({
+  backgroundColor: '#fff',
+  borderRadius: '16px',
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
 }));
 
 // Example contracts
@@ -403,78 +418,140 @@ const ContractAnalysis = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Smart Contract Security Analysis
-        </Typography>
+      <Box my={6}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Typography 
+            variant="h3" 
+            component="h1" 
+            gutterBottom
+            sx={{ 
+              fontWeight: 700,
+              background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 4
+            }}
+          >
+            Smart Contract Security Analysis
+          </Typography>
+        </motion.div>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           <Grid item xs={12}>
-            <StyledCard>
-              <CardContent>
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="example-contract-label">Example Contracts</InputLabel>
-                  <Select
-                    labelId="example-contract-label"
-                    value={selectedExample}
-                    label="Example Contracts"
-                    onChange={handleExampleChange}
-                  >
-                    <MenuItem value="none">Custom Contract</MenuItem>
-                    <MenuItem value="vulnerablePool">Vulnerable Flare Pool</MenuItem>
-                    <MenuItem value="securePool">Secure Flare Pool</MenuItem>
-                    <MenuItem value="ftsoExample">Flare Price Oracle</MenuItem>
-                  </Select>
-                </FormControl>
-                <TextField
-                  label="Contract Name"
-                  fullWidth
-                  margin="normal"
-                  value={contractName}
-                  onChange={(e) => setContractName(e.target.value)}
-                />
-                <TextField
-                  label="Contract Code"
-                  fullWidth
-                  multiline
-                  rows={10}
-                  margin="normal"
-                  value={contractCode}
-                  onChange={(e) => setContractCode(e.target.value)}
-                />
-                <Box mt={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAnalyze}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      'Analyze Contract'
-                    )}
-                  </Button>
-                </Box>
-              </CardContent>
-            </StyledCard>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <StyledCard>
+                <CardContent sx={{ p: 4 }}>
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel id="example-contract-label">Example Contracts</InputLabel>
+                    <StyledSelect
+                      labelId="example-contract-label"
+                      value={selectedExample}
+                      label="Example Contracts"
+                      onChange={handleExampleChange}
+                    >
+                      <MenuItem value="none">Custom Contract</MenuItem>
+                      <MenuItem value="vulnerablePool">Vulnerable Flare Pool</MenuItem>
+                      <MenuItem value="securePool">Secure Flare Pool</MenuItem>
+                      <MenuItem value="ftsoExample">Flare Price Oracle</MenuItem>
+                    </StyledSelect>
+                  </FormControl>
+                  <StyledTextField
+                    label="Contract Name"
+                    fullWidth
+                    margin="normal"
+                    value={contractName}
+                    onChange={(e) => setContractName(e.target.value)}
+                  />
+                  <StyledTextField
+                    label="Contract Code"
+                    fullWidth
+                    multiline
+                    rows={10}
+                    margin="normal"
+                    value={contractCode}
+                    onChange={(e) => setContractCode(e.target.value)}
+                    sx={{
+                      '& .MuiInputBase-root': {
+                        fontFamily: 'monospace',
+                      },
+                    }}
+                  />
+                  <Box mt={4} display="flex" justifyContent="center">
+                    <AnalyzeButton
+                      variant="contained"
+                      color="primary"
+                      onClick={handleAnalyze}
+                      disabled={loading}
+                      startIcon={loading && <CircularProgress size={20} color="inherit" />}
+                    >
+                      {loading ? 'Analyzing...' : 'Analyze Contract'}
+                    </AnalyzeButton>
+                  </Box>
+                </CardContent>
+              </StyledCard>
+            </motion.div>
           </Grid>
 
           {error && (
             <Grid item xs={12}>
-              <Alert severity="error">{error}</Alert>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Alert 
+                  severity="error"
+                  sx={{ 
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+                  }}
+                >
+                  {error}
+                </Alert>
+              </motion.div>
             </Grid>
           )}
 
           {analysis && (
             <>
               <Grid item xs={12} md={4}>
-                <RiskScore score={analysis.risk_score}>
-                  <Typography variant="h6">Risk Score</Typography>
-                  <Typography variant="h3" color="text.secondary">
+                <RiskScore
+                  score={analysis.risk_score}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>Risk Score</Typography>
+                  <Typography 
+                    variant="h2" 
+                    sx={{ 
+                      fontWeight: 700,
+                      color: (() => {
+                        if (analysis.risk_score >= 75) return severityColors.CRITICAL;
+                        if (analysis.risk_score >= 50) return severityColors.HIGH;
+                        if (analysis.risk_score >= 25) return severityColors.MEDIUM;
+                        return severityColors.LOW;
+                      })(),
+                    }}
+                  >
                     {Math.round(analysis.risk_score)}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      mt: 1,
+                      fontWeight: 500,
+                      color: 'text.secondary'
+                    }}
+                  >
                     {analysis.risk_score >= 75
                       ? 'Critical Risk'
                       : analysis.risk_score >= 50
@@ -487,39 +564,63 @@ const ContractAnalysis = () => {
               </Grid>
 
               <Grid item xs={12} md={8}>
-                <Paper elevation={2} sx={{ p: 2 }}>
-                  <Typography variant="h6" gutterBottom>
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    borderRadius: '20px',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                >
+                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
                     Vulnerabilities
                   </Typography>
                   <List>
                     {analysis.vulnerabilities.map((vuln, index) => (
-                      <ListItem key={index} divider>
-                        <ListItemText
-                          primary={
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Typography variant="subtitle1">{vuln.name}</Typography>
-                              <Chip
-                                label={vuln.severity}
-                                size="small"
-                                sx={{
-                                  backgroundColor: severityColors[vuln.severity],
-                                  color: 'white',
-                                }}
-                              />
-                            </Box>
-                          }
-                          secondary={
-                            <>
-                              <Typography variant="body2" paragraph>
-                                {vuln.description}
-                              </Typography>
-                              <Typography variant="body2" color="primary">
-                                Fix: {vuln.fix_recommendation}
-                              </Typography>
-                            </>
-                          }
-                        />
-                      </ListItem>
+                      <VulnerabilityCard
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <ListItem sx={{ px: 0 }}>
+                          <ListItemText
+                            primary={
+                              <Box display="flex" alignItems="center" gap={2}>
+                                <Typography variant="h6" sx={{ fontWeight: 600 }}>{vuln.name}</Typography>
+                                <Chip
+                                  label={vuln.severity}
+                                  size="small"
+                                  sx={{
+                                    backgroundColor: severityColors[vuln.severity],
+                                    color: 'white',
+                                    fontWeight: 500,
+                                    borderRadius: '8px',
+                                  }}
+                                />
+                              </Box>
+                            }
+                            secondary={
+                              <Box mt={1}>
+                                <Typography variant="body1" paragraph>
+                                  {vuln.description}
+                                </Typography>
+                                <Typography 
+                                  variant="body1" 
+                                  sx={{ 
+                                    color: 'primary.main',
+                                    fontWeight: 500,
+                                    mt: 1
+                                  }}
+                                >
+                                  Fix: {vuln.fix_recommendation}
+                                </Typography>
+                              </Box>
+                            }
+                          />
+                        </ListItem>
+                      </VulnerabilityCard>
                     ))}
                   </List>
                 </Paper>
@@ -527,15 +628,29 @@ const ContractAnalysis = () => {
 
               <Grid item xs={12}>
                 <StyledCard>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
+                  <CardContent sx={{ p: 4 }}>
+                    <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
                       Gas Optimization Suggestions
                     </Typography>
                     <List>
                       {analysis.gas_optimization_suggestions.map((suggestion, index) => (
-                        <ListItem key={index}>
-                          <ListItemText primary={suggestion} />
-                        </ListItem>
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                        >
+                          <ListItem>
+                            <ListItemText 
+                              primary={suggestion}
+                              sx={{
+                                '& .MuiTypography-root': {
+                                  fontSize: '1.1rem',
+                                },
+                              }}
+                            />
+                          </ListItem>
+                        </motion.div>
                       ))}
                     </List>
                   </CardContent>
@@ -544,14 +659,18 @@ const ContractAnalysis = () => {
 
               <Grid item xs={12}>
                 <StyledCard>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
+                  <CardContent sx={{ p: 4 }}>
+                    <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
                       Overall Assessment
                     </Typography>
-                    <Divider sx={{ mb: 2 }} />
-                    <MarkdownContent>
+                    <Divider sx={{ mb: 3 }} />
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
                       <ReactMarkdown>{analysis.overall_assessment}</ReactMarkdown>
-                    </MarkdownContent>
+                    </motion.div>
                   </CardContent>
                 </StyledCard>
               </Grid>
