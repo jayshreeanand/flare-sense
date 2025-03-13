@@ -16,7 +16,7 @@ import os
 from pathlib import Path
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -99,17 +99,71 @@ def create_app() -> FastAPI:
 
     # Serve static files from React build
     static_dir = Path("chat-ui/build")
+    logger.info(f"Checking for frontend build at {static_dir}")
+    
+    # List contents of chat-ui directory for debugging
+    chat_ui_dir = Path("chat-ui")
+    if chat_ui_dir.exists():
+        logger.info("Contents of chat-ui directory:")
+        for item in chat_ui_dir.iterdir():
+            logger.info(f"- {item}")
+    else:
+        logger.error("chat-ui directory not found")
+    
     if static_dir.exists():
-        app.mount("/static", StaticFiles(directory=str(static_dir / "static")), name="static")
-        app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets")
+        logger.info("Contents of build directory:")
+        for item in static_dir.iterdir():
+            logger.info(f"- {item}")
+            
+        static_files_dir = static_dir / "static"
+        if not static_files_dir.exists():
+            logger.error(f"Static files directory not found at {static_files_dir}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Frontend static files not found at {static_files_dir}. Contents of {static_dir}: {list(static_dir.iterdir())}"
+            )
 
+        # Mount static files
+        app.mount("/static", StaticFiles(directory=str(static_files_dir)), name="static")
+        
+        index_html = static_dir / "index.html"
+        if not index_html.exists():
+            logger.error(f"index.html not found at {index_html}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Frontend index.html not found at {index_html}. Contents of {static_dir}: {list(static_dir.iterdir())}"
+            )
+
+        logger.info("Frontend build directory verified successfully")
+        
+        # Serve index.html for the root path
+        @app.get("/")
+        async def serve_root():
+            return FileResponse(str(index_html))
+            
+        # Serve index.html for any unmatched routes (client-side routing)
         @app.get("/{full_path:path}")
-        async def serve_react_app(full_path: str):
-            """Serve the React frontend."""
-            static_file = static_dir / full_path
-            if static_file.exists():
-                return FileResponse(str(static_file))
-            return FileResponse(str(static_dir / "index.html"))
+        async def serve_spa(full_path: str):
+            # First try to serve actual files
+            file_path = static_dir / full_path
+            if file_path.exists() and file_path.is_file():
+                return FileResponse(str(file_path))
+            # Otherwise serve index.html for client-side routing
+            return FileResponse(str(index_html))
+    else:
+        logger.error(f"Frontend build directory not found at {static_dir}")
+        # List the current directory contents for debugging
+        current_dir = Path(".")
+        logger.error("Current directory contents:")
+        for item in current_dir.iterdir():
+            logger.error(f"- {item}")
+            
+        @app.get("/")
+        async def serve_root():
+            raise HTTPException(
+                status_code=500,
+                detail=f"Frontend not built. Build directory not found at {static_dir}. Current directory contains: {list(current_dir.iterdir())}"
+            )
 
     return app
 
@@ -132,7 +186,8 @@ def start() -> None:
     """
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8080)  # noqa: S104
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)  # noqa: S104
 
 
 if __name__ == "__main__":

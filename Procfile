@@ -1,1 +1,1 @@
-web: cd chat-ui && npm run build && cd .. && uv run start-backend 
+web: echo "Installing frontend dependencies..." && cd chat-ui && npm install && echo "Building frontend..." && npm run build && echo "Verifying build directory..." && ls -la build && cd .. && echo "Setting up build directory..." && rm -rf chat-ui/build/static && mkdir -p chat-ui/build/static && echo "Copying build files..." && cp -r chat-ui/build/* chat-ui/build/ && echo "Starting backend server..." && python -m uvicorn flare_ai_defai.main:app --host 0.0.0.0 --port $PORT 

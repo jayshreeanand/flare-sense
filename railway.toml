@@ -1,19 +1,52 @@
 [build]
 builder = "nixpacks"
-buildCommand = "cd chat-ui && npm install && npm run build && cd .. && pip install -e ."
+buildCommand = """
+echo "Installing frontend dependencies..." && \
+cd chat-ui && \
+npm install && \
+echo "Building frontend..." && \
+npm run build && \
+echo "Verifying build directory..." && \
+ls -la build && \
+cd .. && \
+echo "Setting up build directory..." && \
+rm -rf chat-ui/build/static && \
+mkdir -p chat-ui/build/static && \
+echo "Copying build files..." && \
+cp -r chat-ui/build/* chat-ui/build/ && \
+echo "Installing backend dependencies..." && \
+pip install -e . && \
+echo "Build process completed."
+"""
 
 [deploy]
-startCommand = "uv run start-backend"
+startCommand = """
+echo "Current directory:" && \
+pwd && \
+echo "Directory contents:" && \
+ls -la && \
+echo "Chat-UI contents:" && \
+ls -la chat-ui && \
+echo "Build directory contents:" && \
+ls -la chat-ui/build && \
+echo "Installing UV..." && \
+pip install uv && \
+echo "Starting backend server..." && \
+python -m uvicorn flare_ai_defai.main:app --host 0.0.0.0 --port $PORT
+"""
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 
 [env]
 PYTHON_VERSION = "3.11"
+NODE_VERSION = "16.20.0"
+NPM_VERSION = "8.19.4"
 GEMINI_MODEL = "gemini-2.0-flash"
 WEB3_PROVIDER_URL = "https://coston2-api.flare.network/ext/C/rpc"
 WEB3_EXPLORER_URL = "https://coston2-explorer.flare.network/"
 SIMULATE_ATTESTATION = "true"
 CORS_ORIGINS = '["*"]'
 API_VERSION = "v1"
-CHAIN_ID = "114" 
+CHAIN_ID = "114"
+PYTHONPATH = "/app/src" 
