@@ -14,10 +14,12 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "serve": "^14.2.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "serve -s build",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -41,6 +43,7 @@
     ]
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "16.20.0",
+    "npm": "8.19.4"
   }
 }
