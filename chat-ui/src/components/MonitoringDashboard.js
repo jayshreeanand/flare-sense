@@ -1,103 +1,242 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { 
+  Box, 
+  Grid, 
+  Paper, 
+  Typography, 
+  Divider,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Alert,
+  Chip,
+  useTheme
+} from '@mui/material';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
+import InfoIcon from '@mui/icons-material/Info';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import SecurityIcon from '@mui/icons-material/Security';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 const AlertSeverityBadge = ({ severity }) => {
+  const theme = useTheme();
+  
   const getColor = () => {
     switch (severity.toLowerCase()) {
       case 'high':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return {
+          bg: theme.palette.error.light,
+          text: theme.palette.error.dark,
+          icon: <ErrorIcon fontSize="small" sx={{ mr: 0.5 }} />
+        };
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return {
+          bg: theme.palette.warning.light,
+          text: theme.palette.warning.dark,
+          icon: <WarningIcon fontSize="small" sx={{ mr: 0.5 }} />
+        };
       case 'low':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return {
+          bg: theme.palette.info.light,
+          text: theme.palette.info.dark,
+          icon: <InfoIcon fontSize="small" sx={{ mr: 0.5 }} />
+        };
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return {
+          bg: theme.palette.grey[100],
+          text: theme.palette.grey[800],
+          icon: <InfoIcon fontSize="small" sx={{ mr: 0.5 }} />
+        };
     }
   };
 
+  const { bg, text, icon } = getColor();
+
   return (
-    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getColor()}`}>
-      {severity.toUpperCase()}
-    </span>
+    <Chip
+      icon={icon}
+      label={severity.toUpperCase()}
+      size="small"
+      sx={{
+        bgcolor: bg,
+        color: text,
+        fontWeight: 'bold',
+        '& .MuiChip-icon': {
+          color: text
+        }
+      }}
+    />
   );
 };
 
 const AlertTypeIcon = ({ type }) => {
-  const getIcon = () => {
+  const theme = useTheme();
+  
+  const getIconInfo = () => {
     switch (type.toLowerCase()) {
       case 'whale_transaction':
-        return '🐋';
+        return {
+          icon: <MonetizationOnIcon />,
+          color: theme.palette.primary.main,
+          bg: `${theme.palette.primary.main}15`
+        };
       case 'unusual_activity':
-        return '⚠️';
+        return {
+          icon: <VisibilityIcon />,
+          color: theme.palette.warning.main,
+          bg: `${theme.palette.warning.main}15`
+        };
       case 'vulnerable_contract':
-        return '🔓';
+        return {
+          icon: <SecurityIcon />,
+          color: theme.palette.error.main,
+          bg: `${theme.palette.error.main}15`
+        };
       case 'security_news':
-        return '📰';
+        return {
+          icon: <NewReleasesIcon />,
+          color: theme.palette.info.main,
+          bg: `${theme.palette.info.main}15`
+        };
       case 'protocol_compromise':
-        return '🚨';
+        return {
+          icon: <ErrorIcon />,
+          color: theme.palette.error.main,
+          bg: `${theme.palette.error.main}15`
+        };
       default:
-        return '📌';
+        return {
+          icon: <InfoIcon />,
+          color: theme.palette.grey[700],
+          bg: theme.palette.grey[100]
+        };
     }
   };
 
-  return <span className="text-xl mr-2">{getIcon()}</span>;
+  const { icon, color, bg } = getIconInfo();
+
+  return (
+    <Box 
+      sx={{ 
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 1.5,
+        borderRadius: 2,
+        bgcolor: bg,
+        color: color,
+        mr: 2
+      }}
+    >
+      {icon}
+    </Box>
+  );
 };
 
 const AlertCard = ({ alert }) => {
   const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-indigo-500">
-      <div className="flex justify-between items-start">
-        <div className="flex items-start">
-          <AlertTypeIcon type={alert.type} />
-          <div>
-            <h3 className="font-semibold text-gray-800">{alert.title}</h3>
-            <p className="text-sm text-gray-600 mt-1">
-              {expanded ? alert.description : `${alert.description.substring(0, 100)}${alert.description.length > 100 ? '...' : ''}`}
-            </p>
-            {alert.description.length > 100 && (
-              <button 
-                className="text-indigo-600 text-xs mt-1 hover:underline"
-                onClick={() => setExpanded(!expanded)}
-              >
-                {expanded ? 'Show less' : 'Show more'}
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col items-end">
-          <AlertSeverityBadge severity={alert.severity} />
-          <span className="text-xs text-gray-500 mt-1">
-            {new Date(alert.timestamp).toLocaleString()}
-          </span>
-        </div>
-      </div>
-      {expanded && (
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div>
-              <span className="font-medium text-gray-700">Source:</span> {alert.source}
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Alert ID:</span> {alert.id.substring(0, 8)}...
-            </div>
-            {alert.affected_protocols.length > 0 && (
-              <div className="col-span-2">
-                <span className="font-medium text-gray-700">Affected Protocols:</span>{' '}
-                {alert.affected_protocols.join(', ')}
-              </div>
-            )}
-            {alert.affected_addresses.length > 0 && (
-              <div className="col-span-2">
-                <span className="font-medium text-gray-700">Affected Addresses:</span>{' '}
-                {alert.affected_addresses.map(addr => `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`).join(', ')}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 3, 
+        mb: 2, 
+        borderRadius: 3,
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        border: '1px solid rgba(0,0,0,0.05)',
+        transition: 'transform 0.2s, box-shadow 0.2s',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 25px rgba(0,0,0,0.1)',
+        }
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <AlertTypeIcon type={alert.type} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {alert.title}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <AlertSeverityBadge severity={alert.severity} />
+            </Box>
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            {expanded ? alert.description : `${alert.description.substring(0, 100)}${alert.description.length > 100 ? '...' : ''}`}
+          </Typography>
+          {alert.description.length > 100 && (
+            <Button 
+              variant="text" 
+              size="small" 
+              onClick={() => setExpanded(!expanded)}
+              sx={{ p: 0, minWidth: 'auto', fontWeight: 'normal', fontSize: '0.75rem' }}
+            >
+              {expanded ? 'Show less' : 'Show more'}
+            </Button>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>
+                Source: {alert.source}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {new Date(alert.timestamp).toLocaleString()}
+              </Typography>
+            </Box>
+          </Box>
+          
+          {expanded && (
+            <Box sx={{ mt: 2, pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
+              {alert.affected_protocols.length > 0 && (
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="caption" fontWeight="bold" display="block" gutterBottom>
+                    Affected Protocols:
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {alert.affected_protocols.map((protocol, idx) => (
+                      <Chip 
+                        key={idx} 
+                        label={protocol} 
+                        size="small" 
+                        sx={{ bgcolor: theme.palette.primary.light, color: theme.palette.primary.contrastText }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+              
+              {alert.affected_addresses.length > 0 && (
+                <Box>
+                  <Typography variant="caption" fontWeight="bold" display="block" gutterBottom>
+                    Affected Addresses:
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {alert.affected_addresses.map((addr, idx) => (
+                      <Chip 
+                        key={idx} 
+                        label={`${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`} 
+                        size="small"
+                        sx={{ bgcolor: theme.palette.secondary.light, color: theme.palette.secondary.contrastText }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 
@@ -115,6 +254,7 @@ const MonitoringDashboard = () => {
     message: '',
     type: '' // 'success' or 'error'
   });
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchAlerts = async () => {
@@ -315,167 +455,259 @@ const MonitoringDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Blockchain & News Monitoring</h1>
-        <div className="flex space-x-4">
-          <select
-            name="type"
-            value={filter.type}
-            onChange={handleFilterChange}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm"
-          >
-            <option value="">All Alert Types</option>
-            <option value="whale_transaction">Whale Transactions</option>
-            <option value="unusual_activity">Unusual Activity</option>
-            <option value="vulnerable_contract">Vulnerable Contracts</option>
-            <option value="security_news">Security News</option>
-            <option value="protocol_compromise">Protocol Compromise</option>
-          </select>
-          <select
-            name="severity"
-            value={filter.severity}
-            onChange={handleFilterChange}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm"
-          >
-            <option value="">All Severities</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-        </div>
-      </div>
+    <Box>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+          Blockchain & News Monitoring
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Monitor blockchain activity, track whale movements, and receive security alerts in real-time.
+        </Typography>
+      </Box>
 
-      <div className="bg-gray-50 rounded-lg p-6">
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-          </div>
-        ) : error && !alerts.length ? (
-          <div className="bg-red-100 text-red-700 p-4 rounded-md">
-            {error}
-          </div>
-        ) : alerts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No alerts found</p>
-            <p className="text-gray-400 text-sm mt-2">
-              Alerts will appear here when suspicious activity is detected
-            </p>
-          </div>
-        ) : (
-          <div>
-            {error && (
-              <div className="mb-4 bg-yellow-100 text-yellow-800 p-3 rounded-md text-sm">
+      <Grid container spacing={3}>
+        {/* Alerts Section */}
+        <Grid item xs={12} lg={8}>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              borderRadius: 3,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              mb: 3
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" fontWeight="bold">
+                Security Alerts
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <FormControl size="small" sx={{ minWidth: 150 }}>
+                  <InputLabel id="type-filter-label">Alert Type</InputLabel>
+                  <Select
+                    labelId="type-filter-label"
+                    id="type-filter"
+                    name="type"
+                    value={filter.type}
+                    label="Alert Type"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">All Types</MenuItem>
+                    <MenuItem value="whale_transaction">Whale Transactions</MenuItem>
+                    <MenuItem value="unusual_activity">Unusual Activity</MenuItem>
+                    <MenuItem value="vulnerable_contract">Vulnerable Contracts</MenuItem>
+                    <MenuItem value="security_news">Security News</MenuItem>
+                    <MenuItem value="protocol_compromise">Protocol Compromise</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <InputLabel id="severity-filter-label">Severity</InputLabel>
+                  <Select
+                    labelId="severity-filter-label"
+                    id="severity-filter"
+                    name="severity"
+                    value={filter.severity}
+                    label="Severity"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="high">High</MenuItem>
+                    <MenuItem value="medium">Medium</MenuItem>
+                    <MenuItem value="low">Low</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            
+            {loading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+                <CircularProgress />
+              </Box>
+            ) : error && !alerts.length ? (
+              <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
-              </div>
+              </Alert>
+            ) : alerts.length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  No alerts found
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Alerts will appear here when suspicious activity is detected
+                </Typography>
+              </Box>
+            ) : (
+              <Box>
+                {error && (
+                  <Alert severity="warning" sx={{ mb: 2 }}>
+                    {error}
+                  </Alert>
+                )}
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Showing {alerts.length} alerts
+                  </Typography>
+                  <Button 
+                    variant="outlined" 
+                    size="small"
+                    onClick={() => {
+                      setLoading(true);
+                      setTimeout(() => setLoading(false), 500);
+                    }}
+                  >
+                    Refresh
+                  </Button>
+                </Box>
+                <Box>
+                  {alerts.map(alert => (
+                    <AlertCard key={alert.id} alert={alert} />
+                  ))}
+                </Box>
+              </Box>
             )}
-            <div className="mb-4 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Recent Alerts</h2>
-              <span className="text-sm text-gray-500">
-                Showing {alerts.length} alerts
-              </span>
-            </div>
-            <div className="space-y-4">
-              {alerts.map(alert => (
-                <AlertCard key={alert.id} alert={alert} />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+          </Paper>
+        </Grid>
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Register for Alerts</h2>
-          {registrationStatus.message && (
-            <div className={`mb-4 p-3 rounded-md text-sm ${
-              registrationStatus.type === 'success' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-red-100 text-red-700'
-            }`}>
-              {registrationStatus.message}
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Monitor Address
-              </label>
-              <div className="flex">
-                <input
-                  type="text"
-                  placeholder="Enter blockchain address"
-                  className="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm"
-                  value={addressInput}
-                  onChange={(e) => setAddressInput(e.target.value)}
-                />
-                <button 
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-r-md text-sm hover:bg-indigo-700"
-                  onClick={handleAddressRegistration}
-                >
-                  Register
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Monitor Protocol
-              </label>
-              <div className="flex">
-                <input
-                  type="text"
-                  placeholder="Enter protocol name"
-                  className="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm"
-                  value={protocolInput}
-                  onChange={(e) => setProtocolInput(e.target.value)}
-                />
-                <button 
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-r-md text-sm hover:bg-indigo-700"
-                  onClick={handleProtocolRegistration}
-                >
-                  Register
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Monitoring Status</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Blockchain Monitoring</span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Active
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">News Monitoring</span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Active
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Last Updated</span>
-              <span className="text-sm text-gray-500">
-                {new Date().toLocaleString()}
-              </span>
-            </div>
-            <div className="pt-3 mt-3 border-t border-gray-100">
-              <button 
-                className="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm hover:bg-gray-200"
-                onClick={() => {
-                  setLoading(true);
-                  setTimeout(() => setLoading(false), 500);
-                }}
+        {/* Registration Section */}
+        <Grid item xs={12} lg={4}>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              borderRadius: 3,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              mb: 3
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Register for Alerts
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            
+            {registrationStatus.message && (
+              <Alert 
+                severity={registrationStatus.type === 'success' ? 'success' : 'error'} 
+                sx={{ mb: 2 }}
               >
-                Refresh Data
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                {registrationStatus.message}
+              </Alert>
+            )}
+            
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                Monitor Address
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Receive alerts for suspicious activity related to a specific blockchain address.
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Enter blockchain address"
+                value={addressInput}
+                onChange={(e) => setAddressInput(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+              <Button 
+                variant="contained" 
+                color="primary"
+                onClick={handleAddressRegistration}
+                fullWidth
+              >
+                Register Address
+              </Button>
+            </Box>
+            
+            <Box>
+              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                Monitor Protocol
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Receive alerts for security news and vulnerabilities related to a specific protocol.
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Enter protocol name"
+                value={protocolInput}
+                onChange={(e) => setProtocolInput(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+              <Button 
+                variant="contained" 
+                color="primary"
+                onClick={handleProtocolRegistration}
+                fullWidth
+              >
+                Register Protocol
+              </Button>
+            </Box>
+          </Paper>
+          
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 3, 
+              borderRadius: 3,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              border: '1px solid rgba(0,0,0,0.05)'
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Monitoring Status
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Typography variant="body2">Blockchain Monitoring</Typography>
+                <Chip 
+                  label="Active" 
+                  size="small" 
+                  sx={{ 
+                    bgcolor: theme.palette.success.light, 
+                    color: theme.palette.success.dark,
+                    fontWeight: 'bold'
+                  }} 
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Typography variant="body2">News Monitoring</Typography>
+                <Chip 
+                  label="Active" 
+                  size="small" 
+                  sx={{ 
+                    bgcolor: theme.palette.success.light, 
+                    color: theme.palette.success.dark,
+                    fontWeight: 'bold'
+                  }} 
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2">Last Updated</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {new Date().toLocaleString()}
+                </Typography>
+              </Box>
+            </Box>
+            
+            <Button 
+              variant="outlined" 
+              fullWidth
+              onClick={() => {
+                setLoading(true);
+                setTimeout(() => setLoading(false), 500);
+              }}
+            >
+              Refresh Data
+            </Button>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

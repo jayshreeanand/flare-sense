@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import './index.css';
 import {
-  AppBar,
-  Box,
-  Container,
   CssBaseline,
-  Tab,
-  Tabs,
   ThemeProvider,
-  Toolbar,
-  Typography,
   createTheme,
 } from '@mui/material';
 import ContractAnalysis from './components/ContractAnalysis';
 import ContractMonitoring from './components/ContractMonitoring';
 import MonitoringDashboard from './components/MonitoringDashboard';
 import Chat from './components/Chat';
+import LandingPage from './components/LandingPage';
+import DashboardLayout from './components/DashboardLayout';
+import DashboardHome from './components/DashboardHome';
 
+// Create a custom theme
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -26,75 +23,82 @@ const theme = createTheme({
     secondary: {
       main: '#dc004e',
     },
+    background: {
+      default: '#f5f7fa',
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 600,
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+        },
+      },
+    },
   },
 });
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
 function App() {
-  const [currentTab, setCurrentTab] = useState(0);
+  // State to track if user has entered the dashboard
+  const [showDashboard, setShowDashboard] = useState(false);
+  
+  // State to track current page in dashboard
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
-  const handleTabChange = (event, newValue) => {
-    setCurrentTab(newValue);
+  const handleGetStarted = () => {
+    setShowDashboard(true);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Render the appropriate component based on the current page
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <DashboardHome />;
+      case 'contract-analysis':
+        return <ContractAnalysis />;
+      case 'activity-monitoring':
+        return <ContractMonitoring />;
+      case 'blockchain-monitoring':
+        return <MonitoringDashboard />;
+      case 'chat':
+        return <Chat />;
+      default:
+        return <DashboardHome />;
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              FlareSense: DeFAI Security Agent
-            </Typography>
-          </Toolbar>
-          <Tabs
-            value={currentTab}
-            onChange={handleTabChange}
-            aria-label="navigation tabs"
-            centered
-            sx={{ bgcolor: 'background.paper' }}
-          >
-            <Tab label="Contract Analysis" />
-            <Tab label="Activity Monitoring" />
-            <Tab label="Blockchain Monitoring" />
-            <Tab label="Chat" />
-          </Tabs>
-        </AppBar>
-
-        <Container component="main" sx={{ mt: 4, mb: 4, flex: 1 }}>
-          <TabPanel value={currentTab} index={0}>
-            <ContractAnalysis />
-          </TabPanel>
-          <TabPanel value={currentTab} index={1}>
-            <ContractMonitoring />
-          </TabPanel>
-          <TabPanel value={currentTab} index={2}>
-            <MonitoringDashboard />
-          </TabPanel>
-          <TabPanel value={currentTab} index={3}>
-            <Chat />
-          </TabPanel>
-        </Container>
-      </Box>
+      
+      {showDashboard ? (
+        <DashboardLayout 
+          currentPage={currentPage} 
+          onPageChange={handlePageChange}
+        >
+          {renderCurrentPage()}
+        </DashboardLayout>
+      ) : (
+        <LandingPage onGetStarted={handleGetStarted} />
+      )}
     </ThemeProvider>
   );
 }
