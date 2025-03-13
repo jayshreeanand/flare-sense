@@ -1171,7 +1171,7 @@ contract SimpleNFT is ERC721URIStorage, Ownable {
                         </TableContainer>
                       </Box>
                       
-                      
+                      {/* Note: The chart below requires the recharts library */}
                       <Box sx={{ height: 300 }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart

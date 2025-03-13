@@ -5,7 +5,7 @@ Flare AI Kit template for AI x DeFi (DeFAI).
 External IP: 34.169.170.179
 GCP instance name: flare-sense
 
-## 🚀 Key Features
+## Key Features
 
 - **Secure AI Execution**  
   Runs within a Trusted Execution Environment (TEE) featuring remote attestation support for robust security.
@@ -17,11 +17,20 @@ GCP instance name: flare-sense
   Perform token operations and generate wallets from within the TEE.
 
 - **Gemini 2.0 + over 300 LLMs supported**  
-  Utilize Google Gemini’s latest model with structured query support for advanced AI functionalities.
+  Utilize Google Gemini's latest model with structured query support for advanced AI functionalities.
+
+- **Smart Contract Analysis**  
+  Analyze smart contracts for vulnerabilities, code quality issues, and gas optimization opportunities.
+
+- **Risk Assessment**  
+  AI-powered risk assessment for smart contracts, protocols, and blockchain addresses using RAG knowledge and consensus learning.
+
+- **Blockchain & News Monitoring**  
+  Monitor blockchain activity, track whale movements, and receive security alerts in real-time.
 
 <img width="500" alt="Artemis" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
 
-## 🎯 Getting Started
+## Getting Started
 
 You can deploy Flare AI DeFAI using Docker (recommended) or set up the backend and frontend manually.
 
@@ -50,7 +59,7 @@ The Docker setup mimics a TEE environment and includes an Nginx server for routi
 3. **Access the Frontend:**  
    Open your browser and navigate to [http://localhost:80](http://localhost:80) to interact with the Chat UI.
 
-## 🛠 Build Manually
+## Build Manually
 
 Flare AI DeFAI is composed of a Python-based backend and a JavaScript frontend. Follow these steps for manual setup:
 
@@ -78,6 +87,7 @@ Flare AI DeFAI is composed of a Python-based backend and a JavaScript frontend. 
    ```bash
    cd chat-ui/
    npm install
+   npm install recharts --legacy-peer-deps  # For data visualization components
    ```
 
 2. **Configure the Frontend:**  
@@ -120,9 +130,19 @@ src/flare_ai_defai/
 ├── exceptions.py      # Custom errors
 ├── main.py          # Primary entrypoint
 └── settings.py       # Configuration settings error
+
+chat-ui/
+├── src/
+│   ├── components/        # React components
+│   │   ├── ContractAnalysis.js  # Smart contract analysis component
+│   │   ├── RiskAssessment.js    # Risk assessment component
+│   │   └── MonitoringDashboard.js  # Blockchain monitoring component
+│   ├── App.js            # Main application component
+│   └── ...               # Other React files
+└── ...                   # Configuration files
 ```
 
-## 🚀 Deploy on TEE
+## Deploy on TEE
 
 Deploy on a [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) using AMD SEV.
 
@@ -233,6 +253,13 @@ If you encounter issues, follow these steps:
 3. **Check Firewall Settings:**  
    Confirm that your instance is publicly accessible on port `80`.
 
+4. **Frontend Dependencies:**  
+   If charts or visualizations aren't rendering properly, ensure recharts is installed:
+   ```bash
+   cd chat-ui/
+   npm install recharts --legacy-peer-deps
+   ```
+
 ## 💡 Next Steps
 
 Once your instance is running, access the Chat UI using its public IP address. Here are some example interactions to try:
@@ -240,6 +267,9 @@ Once your instance is running, access the Chat UI using its public IP address. H
 - **"Create an account for me"**
 - **"Transfer 10 C2FLR to 0x000000000000000000000000000000000000dEaD"**
 - **"Show me your remote attestation"**
+- **"Analyze this smart contract for vulnerabilities"**
+- **"Assess the risk of this protocol"**
+- **"Monitor this blockchain address for suspicious activity"**
 
 ### Future Upgrades
 
@@ -248,8 +278,6 @@ Once your instance is running, access the Chat UI using its public IP address. H
 
 - **Expanded Flare Ecosystem Support:**
   - **Token Swaps:** via [SparkDEX](http://sparkdex.ai)
-  - **Borrow-Lend:** via [Kinetic](https://linktr.ee/kinetic.market)
-  - **Trading Strategies:** via [RainDEX](https://www.rainlang.xyz)
 
 ### Example Use Cases & Project Ideas
 

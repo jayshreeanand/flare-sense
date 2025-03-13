@@ -1,6 +1,22 @@
-# Getting Started with Create React App
+# Flare Sense Chat UI
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Features
+
+- **Chat Interface**: Interact with AI models for blockchain and smart contract analysis
+- **Contract Analysis**: Analyze smart contracts for vulnerabilities, code quality, and gas optimization
+- **Risk Assessment**: AI-powered risk assessment for smart contracts, protocols, and blockchain addresses
+- **Monitoring Dashboard**: Track blockchain activity, whale movements, and security alerts in real-time
+
+## Dependencies
+
+This project uses several key dependencies:
+
+- **React**: Frontend UI library
+- **Material-UI**: Component library for consistent design
+- **Recharts**: Data visualization library for charts and graphs
+- **Framer Motion**: Animation library for smooth UI transitions
 
 ## Available Scripts
 
@@ -29,15 +45,25 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## Installing Dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Make sure to install all required dependencies:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+npm install recharts --legacy-peer-deps  # For data visualization components
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The `--legacy-peer-deps` flag may be necessary due to peer dependency conflicts.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Component Structure
+
+The application includes several key components:
+
+- **Chat**: Main chat interface for interacting with the AI
+- **ContractAnalysis**: Smart contract analysis tool that detects vulnerabilities and provides gas optimization suggestions
+- **RiskAssessment**: Risk assessment tool for smart contracts, protocols, and blockchain addresses
+- **MonitoringDashboard**: Real-time monitoring of blockchain activity and security alerts
 
 ## Learn More
 
