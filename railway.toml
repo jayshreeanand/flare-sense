@@ -9,4 +9,11 @@ healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 
 [env]
-PYTHON_VERSION = "3.11" 
+PYTHON_VERSION = "3.11"
+GEMINI_MODEL = "gemini-2.0-flash"
+WEB3_PROVIDER_URL = "https://coston2-api.flare.network/ext/C/rpc"
+WEB3_EXPLORER_URL = "https://coston2-explorer.flare.network/"
+SIMULATE_ATTESTATION = "true"
+CORS_ORIGINS = '["*"]'
+API_VERSION = "v1"
+CHAIN_ID = "114" 

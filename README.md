@@ -124,30 +124,39 @@ npm install -g @railway/cli
 railway login
 ```
 
-3. Link your project:
+3. Create a new project in Railway and link it:
 
 ```bash
-railway link
+railway init
 ```
 
-4. Deploy:
+4. Set up the required environment variables in Railway:
+
+   - Go to your project settings in the Railway dashboard
+   - Add the following variables:
+     ```
+     GEMINI_API_KEY=your_api_key_here
+     GEMINI_MODEL=gemini-2.0-flash
+     WEB3_PROVIDER_URL=https://coston2-api.flare.network/ext/C/rpc
+     WEB3_EXPLORER_URL=https://coston2-explorer.flare.network/
+     SIMULATE_ATTESTATION=true
+     CORS_ORIGINS=["*"]
+     API_VERSION=v1
+     CHAIN_ID=114
+     ```
+   - Note: Railway will automatically set the `PORT` variable
+
+5. Deploy your project:
 
 ```bash
 railway up
 ```
 
-### Environment Variables on Railway
-
-Configure the following environment variables in your Railway project settings:
-
-- `GEMINI_API_KEY`
-- `WEB3_PROVIDER_URL`
-- `WEB3_EXPLORER_URL`
-- `CORS_ORIGINS`
-- `API_VERSION`
-- `CHAIN_ID`
-
-Railway will automatically set the `PORT` variable.
+6. Monitor the deployment:
+   - Check the deployment logs in the Railway dashboard
+   - Ensure all environment variables are properly set
+   - Verify the health check endpoint is responding
+   - Test the frontend interface at your Railway-provided URL
 
 ### Docker Support
 
