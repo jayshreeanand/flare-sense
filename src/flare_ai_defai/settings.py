@@ -27,21 +27,21 @@ class Settings(BaseSettings):
     # Restrict backend listener to specific IPs
     cors_origins: list[str] = ["*"]
     # API key for accessing Google's Gemini AI service
-    gemini_api_key: Annotated[str, Field(min_length=1)]
+    gemini_api_key: Annotated[str, Field(min_length=1, alias="GEMINI_API_KEY")]
     # The Gemini model identifier to use
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = Field(default="gemini-2.0-flash", alias="GEMINI_MODEL")
     # API version to use at the backend
-    api_version: str = "0.1.0"
+    api_version: str = Field(default="0.1.0", alias="API_VERSION")
     # URL for the Flare Network RPC provider
-    web3_provider_url: Annotated[str, Field(min_length=1)]
+    web3_provider_url: Annotated[str, Field(min_length=1, alias="WEB3_PROVIDER_URL")]
     # URL for the Flare Network block explorer
-    web3_explorer_url: Annotated[str, Field(min_length=1)]
+    web3_explorer_url: Annotated[str, Field(min_length=1, alias="WEB3_EXPLORER_URL")]
     # Chain ID for Flare network
-    chain_id: int = 114  # Coston2 testnet chain ID
+    chain_id: int = Field(default=114, alias="CHAIN_ID")  # Coston2 testnet chain ID
     # Reference image for tee
-    tee_image_reference: str = "ghcr.io/flare-foundation/flare-ai-defai:main"
+    tee_image_reference: str = Field(default="ghcr.io/flare-foundation/flare-ai-defai:main", alias="TEE_IMAGE_REFERENCE")
     # Instance name
-    instance_name: str = "flare-sense"
+    instance_name: str = Field(default="flare-sense", alias="INSTANCE_NAME")
 
     model_config = SettingsConfigDict(
         # This enables .env file support
