@@ -1,1 +1,0 @@
-web: cd chat-ui && npm start 
