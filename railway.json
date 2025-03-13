@@ -4,7 +4,7 @@
     "builder": "NIXPACKS",
     "buildCommand": "cd chat-ui && npm ci && npm run build",
     "nixpacksConfig": {
-      "node-version": "16.20.0"
+      "node-version": "20.0.0"
     }
   },
   "deploy": {
