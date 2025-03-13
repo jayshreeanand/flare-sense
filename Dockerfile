@@ -6,23 +6,49 @@ RUN npm install
 RUN npm run build
 
 # Stage 2: Build Backend
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS backend-builder
-ADD . /flare-ai-defai
-WORKDIR /flare-ai-defai
-RUN uv sync --frozen
+FROM python:3.12-slim AS backend-builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency files
+COPY pyproject.toml .
+COPY .env .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir "uv==0.1.24" && \
+    uv venv && \
+    . .venv/bin/activate && \
+    uv pip install -e .
+
+# Copy application code
+COPY src/ src/
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Command to run the application
+CMD ["python", "-m", "flare_ai_defai.main"]
 
 # Stage 3: Final Image
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
-# Install nginx
+# Install nginx and supervisor
 RUN apt-get update && apt-get install -y nginx supervisor curl && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=backend-builder /flare-ai-defai/.venv ./.venv
-COPY --from=backend-builder /flare-ai-defai/src ./src
-COPY --from=backend-builder /flare-ai-defai/pyproject.toml .
-COPY --from=backend-builder /flare-ai-defai/README.md .
+
+# Copy backend files from builder
+COPY --from=backend-builder /app/.venv ./.venv
+COPY --from=backend-builder /app/src ./src
+COPY --from=backend-builder /app/pyproject.toml .
+COPY --from=backend-builder /app/README.md .
 
 # Copy frontend files
 COPY --from=frontend-builder /frontend/build /usr/share/nginx/html
