@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import {
   Box,
   Button,
@@ -15,6 +16,7 @@ import {
   ListItem,
   ListItemText,
   Paper,
+  Divider,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -42,6 +44,47 @@ const RiskScore = styled(Box)(({ theme, score }) => ({
     return '#e8f5e9';
   })(),
   borderRadius: theme.shape.borderRadius,
+}));
+
+const MarkdownContent = styled(Box)(({ theme }) => ({
+  '& h1, & h2, & h3, & h4, & h5, & h6': {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+    fontWeight: 600,
+  },
+  '& h1': { fontSize: '2rem' },
+  '& h2': { fontSize: '1.8rem' },
+  '& h3': { fontSize: '1.6rem' },
+  '& h4': { fontSize: '1.4rem' },
+  '& h5': { fontSize: '1.2rem' },
+  '& h6': { fontSize: '1.1rem' },
+  '& p': {
+    marginBottom: theme.spacing(2),
+    lineHeight: 1.6,
+  },
+  '& ul, & ol': {
+    marginBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
+  },
+  '& li': {
+    marginBottom: theme.spacing(1),
+  },
+  '& code': {
+    backgroundColor: theme.palette.grey[100],
+    padding: theme.spacing(0.5, 1),
+    borderRadius: theme.shape.borderRadius,
+    fontFamily: 'monospace',
+  },
+  '& pre': {
+    backgroundColor: theme.palette.grey[100],
+    padding: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    overflowX: 'auto',
+    '& code': {
+      backgroundColor: 'transparent',
+      padding: 0,
+    },
+  },
 }));
 
 const ContractAnalysis = () => {
@@ -218,9 +261,10 @@ const ContractAnalysis = () => {
                     <Typography variant="h6" gutterBottom>
                       Overall Assessment
                     </Typography>
-                    <Typography variant="body1">
-                      {analysis.overall_assessment}
-                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <MarkdownContent>
+                      <ReactMarkdown>{analysis.overall_assessment}</ReactMarkdown>
+                    </MarkdownContent>
                   </CardContent>
                 </StyledCard>
               </Grid>
