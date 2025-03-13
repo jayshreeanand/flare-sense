@@ -24,6 +24,9 @@ COPY --from=backend-builder /flare-ai-defai/src ./src
 COPY --from=backend-builder /flare-ai-defai/pyproject.toml .
 COPY --from=backend-builder /flare-ai-defai/README.md .
 
+# Install required Python packages
+RUN pip install --no-cache-dir uvicorn fastapi httpx aiohttp pydantic-settings requests structlog google-generativeai cryptography pyjwt pyopenssl web3
+
 # Copy frontend files
 COPY --from=frontend-builder /frontend/build /usr/share/nginx/html
 

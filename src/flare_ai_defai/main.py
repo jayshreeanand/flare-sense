@@ -13,8 +13,13 @@ Dependencies:
 """
 
 import structlog
-from fastapi import FastAPI
+import os
+import asyncio
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 
 from flare_ai_defai import (
     ChatRouter,
@@ -24,9 +29,85 @@ from flare_ai_defai import (
     Vtpm,
 )
 from flare_ai_defai.api.contract_routes import router as contract_router
+from flare_ai_defai.api.monitoring_routes import router as monitoring_router
+from flare_ai_defai.monitoring import (
+    AlertService,
+    BlockchainMonitor,
+    NewsMonitor,
+    AlertType,
+    ConsoleAlertHandler,
+    WebhookAlertHandler,
+)
 from flare_ai_defai.settings import settings
 
 logger = structlog.get_logger(__name__)
+
+# Global instances for monitoring services
+alert_service = AlertService()
+blockchain_monitor = None
+news_monitor = None
+
+
+async def initialize_monitoring_services():
+    """Initialize and start the monitoring services."""
+    global blockchain_monitor, news_monitor
+    
+    logger.info("Initializing monitoring services")
+    
+    # Initialize blockchain monitor
+    blockchain_monitor = BlockchainMonitor()
+    
+    # Initialize news monitor
+    news_monitor = NewsMonitor(api_key=settings.news_api_key)
+    
+    # Register alert handlers
+    console_handler = ConsoleAlertHandler()
+    alert_service.register_handler(AlertType.WHALE_TRANSACTION, console_handler)
+    alert_service.register_handler(AlertType.UNUSUAL_ACTIVITY, console_handler)
+    alert_service.register_handler(AlertType.VULNERABLE_CONTRACT, console_handler)
+    alert_service.register_handler(AlertType.SECURITY_NEWS, console_handler)
+    alert_service.register_handler(AlertType.PROTOCOL_COMPROMISE, console_handler)
+    
+    # Register webhook handler if URL is configured
+    if settings.webhook_url:
+        webhook_handler = WebhookAlertHandler(webhook_url=settings.webhook_url)
+        alert_service.register_handler(AlertType.WHALE_TRANSACTION, webhook_handler)
+        alert_service.register_handler(AlertType.PROTOCOL_COMPROMISE, webhook_handler)
+    
+    # Start monitoring services in background tasks
+    asyncio.create_task(blockchain_monitor.start_monitoring(
+        poll_interval=settings.monitoring_poll_interval
+    ))
+    asyncio.create_task(news_monitor.start_monitoring(
+        poll_interval=settings.monitoring_poll_interval * 5  # Poll news less frequently
+    ))
+    
+    logger.info("Monitoring services started")
+
+
+async def shutdown_monitoring_services():
+    """Shutdown the monitoring services."""
+    logger.info("Shutting down monitoring services")
+    # In a real implementation, this would gracefully shut down the services
+    # For now, we just log the shutdown
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for the FastAPI application.
+    
+    This handles startup and shutdown events for the application.
+    """
+    # Startup
+    if settings.enable_monitoring:
+        await initialize_monitoring_services()
+    
+    yield
+    
+    # Shutdown
+    if settings.enable_monitoring:
+        await shutdown_monitoring_services()
 
 
 def create_app() -> FastAPI:
@@ -60,6 +141,7 @@ def create_app() -> FastAPI:
         description="AI-powered DeFi security analysis and monitoring",
         version=settings.api_version,
         redirect_slashes=False,
+        lifespan=lifespan,
     )
 
     # Configure CORS middleware with settings from configuration
@@ -70,6 +152,51 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Add health check endpoint
+    @app.get("/health")  # noqa: ARG001
+    async def health_check():  # noqa: ARG001
+        return {"status": "ok"}
+
+    # Serve static files if available
+    static_directory = "/usr/share/nginx/html"
+    if os.path.exists(static_directory):
+        logger.info(f"Static directory found at {static_directory}")
+        app.mount("/static", StaticFiles(directory=f"{static_directory}/static"), name="static")
+    else:
+        logger.error(f"Static directory not found at {static_directory}")
+        logger.error(f"Current directory contents: {os.listdir('/')}")
+
+    # Serve index.html for the root path
+    @app.get("/")  # noqa: ARG001
+    async def serve_frontend(request: Request):  # noqa: ARG001
+        index_path = f"{static_directory}/index.html"
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        else:
+            logger.error(f"index.html not found at {index_path}")
+            logger.error(f"Directory contents: {os.listdir(static_directory) if os.path.exists(static_directory) else 'static directory not found'}")
+            return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+
+    # Catch-all route for client-side routing
+    @app.get("/{path:path}")  # noqa: ARG001
+    async def catch_all(request: Request, path: str):  # noqa: ARG001
+        # Skip API routes
+        if path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not found")
+            
+        # First check if the path exists as a static file
+        requested_path = f"{static_directory}/{path}"
+        if os.path.exists(requested_path) and not os.path.isdir(requested_path):
+            return FileResponse(requested_path)
+        
+        # If not, serve index.html for client-side routing
+        index_path = f"{static_directory}/index.html"
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        else:
+            logger.error(f"index.html not found at {index_path}")
+            return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
 
     # Initialize router with service providers
     chat = ChatRouter(
@@ -85,6 +212,11 @@ def create_app() -> FastAPI:
         contract_router,
         prefix="/api/routes/contracts",
         tags=["smart-contracts"],
+    )
+    app.include_router(
+        monitoring_router,
+        prefix="/api/routes/monitoring",
+        tags=["monitoring"],
     )
 
     return app

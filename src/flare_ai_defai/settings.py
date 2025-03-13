@@ -42,6 +42,14 @@ class Settings(BaseSettings):
     tee_image_reference: str = Field(default="ghcr.io/flare-foundation/flare-ai-defai:main", alias="TEE_IMAGE_REFERENCE")
     # Instance name
     instance_name: str = Field(default="flare-sense", alias="INSTANCE_NAME")
+    
+    # Monitoring settings
+    enable_monitoring: bool = Field(default=True, alias="ENABLE_MONITORING")
+    monitoring_poll_interval: int = Field(default=60, alias="MONITORING_POLL_INTERVAL")  # seconds
+    whale_threshold: float = Field(default=10000, alias="WHALE_THRESHOLD")  # in FLR
+    news_api_key: str = Field(default="", alias="NEWS_API_KEY")
+    webhook_url: str = Field(default="", alias="WEBHOOK_URL")
+    enable_notifications: bool = Field(default=True, alias="ENABLE_NOTIFICATIONS")
 
     model_config = SettingsConfigDict(
         # This enables .env file support

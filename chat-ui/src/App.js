@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import ContractAnalysis from './components/ContractAnalysis';
 import ContractMonitoring from './components/ContractMonitoring';
+import MonitoringDashboard from './components/MonitoringDashboard';
 import Chat from './components/Chat';
 
 const theme = createTheme({
@@ -74,6 +75,7 @@ function App() {
           >
             <Tab label="Contract Analysis" />
             <Tab label="Activity Monitoring" />
+            <Tab label="Blockchain Monitoring" />
             <Tab label="Chat" />
           </Tabs>
         </AppBar>
@@ -86,6 +88,9 @@ function App() {
             <ContractMonitoring />
           </TabPanel>
           <TabPanel value={currentTab} index={2}>
+            <MonitoringDashboard />
+          </TabPanel>
+          <TabPanel value={currentTab} index={3}>
             <Chat />
           </TabPanel>
         </Container>
