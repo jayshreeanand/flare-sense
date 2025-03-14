@@ -32,6 +32,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
 const drawerWidth = 260;
 
@@ -75,6 +76,7 @@ const DashboardLayout = ({ children, currentPage, onPageChange, onBackToLanding 
     { text: 'Activity Monitoring', icon: <MonitorIcon />, value: 'activity-monitoring' },
     { text: 'Blockchain Monitoring', icon: <AnalyticsIcon />, value: 'blockchain-monitoring' },
     { text: 'Risk Assessment', icon: <Box component="span" sx={{ fontSize: '1.5rem' }}>🛡️</Box>, value: 'risk-assessment' },
+    { text: 'Telegram Bot', icon: <TelegramIcon />, value: 'telegram-bot' },
     { text: 'Chat Assistant', icon: <ChatIcon />, value: 'chat' },
   ];
 

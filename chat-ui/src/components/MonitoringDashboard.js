@@ -16,8 +16,22 @@ import {
   Alert,
   Chip,
   useTheme,
-  ButtonGroup
+  ButtonGroup,
+  Stepper,
+  Step,
+  StepLabel,
+  Link,
+  Card,
+  CardContent,
+  IconButton,
+  Tooltip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { QRCodeSVG } from 'qrcode.react';
 
 const AlertSeverityBadge = ({ severity }) => {
   const theme = useTheme();

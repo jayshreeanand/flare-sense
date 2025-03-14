@@ -13,6 +13,7 @@ import Chat from './components/Chat';
 import LandingPage from './components/LandingPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardHome from './components/DashboardHome';
+import TelegramBot from './components/TelegramBot';
 
 // Create a custom theme
 const theme = createTheme({
@@ -103,6 +104,8 @@ function App() {
         return <MonitoringDashboard />;
       case 'risk-assessment':
         return <RiskAssessment />;
+      case 'telegram-bot':
+        return <TelegramBot />;
       case 'chat':
         return <Chat />;
       default:
