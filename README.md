@@ -2,8 +2,10 @@
 
 Flare AI Kit template for AI x DeFi (DeFAI).
 
-External IP: 34.169.170.179
+External IP: http://34.169.170.179/
 GCP instance name: flare-sense
+
+Demo URL: https://flare-sense.up.railway.app
 
 ## Key Features
 
