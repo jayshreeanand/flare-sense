@@ -101,7 +101,19 @@ const DashboardLayout = ({ children, currentPage, onPageChange, onBackToLanding 
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component="div" 
+            sx={{ 
+              flexGrow: 1,
+              cursor: 'pointer',
+              '&:hover': {
+                color: theme.palette.primary.main,
+              }
+            }}
+            onClick={() => onPageChange('dashboard')}
+          >
             FlareSense
           </Typography>
           
