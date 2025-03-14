@@ -10,16 +10,21 @@ import {
 function Chat() {
   const [messages, setMessages] = useState([
     {
-      text: "Hi, I'm Artemis! 👋 I'm your Copilot for Flare, ready to help you with a wide range of tasks:\n\n" +
-            "- **Blockchain Operations**: Generate wallets, send tokens, and execute token swaps\n" +
-            "- **Smart Contract Analysis**: Analyze contracts for vulnerabilities and security risks\n" +
-            "- **Blockchain Monitoring**: Set up monitoring for addresses and protocols\n" +
-            "- **Telegram Alerts**: Manage your Telegram bot subscriptions and alerts\n\n" +
+      text: "Hi, I'm Artemis! 👋 I'm your AI assistant for FlareSense, ready to help you with a wide range of DeFi security tasks:\n\n" +
+            "- **Smart Contract Analysis**: Analyze contracts for vulnerabilities, code quality issues, and gas optimization\n" +
+            "- **Risk Assessment**: Evaluate security risks for contracts, protocols, and addresses\n" +
+            "- **Blockchain Monitoring**: Set up monitoring for addresses, protocols, and unusual activity\n" +
+            "- **Security Alerts**: Receive notifications about threats affecting your assets\n" +
+            "- **Telegram Integration**: Manage your Telegram bot subscriptions and alerts\n" +
+            "- **Blockchain Operations**: Generate wallets, send tokens, and execute transactions\n\n" +
             "Try asking me things like:\n" +
             "- \"Analyze this smart contract: 0x742d35Cc6634C0532925a3b844Bc454e4438f44e\"\n" +
-            "- \"Monitor this address for unusual activity\"\n" +
-            "- \"Set up Telegram alerts for whale transactions\"\n\n" +
-            "⚠️ While I aim to be accurate, never risk funds you can't afford to lose.",
+            "- \"What's the risk score for Uniswap protocol?\"\n" +
+            "- \"Monitor this address for unusual activity: 0x28c6c06298d514db089934071355e5743bf21d60\"\n" +
+            "- \"Set up Telegram alerts for whale transactions\"\n" +
+            "- \"Generate a new wallet for me\"\n" +
+            "- \"What are the latest DeFi security threats?\"\n\n" +
+            "⚠️ While I aim to provide accurate security insights, always perform your own due diligence before interacting with any smart contract or protocol.",
       type: 'bot'
     }
   ]);

@@ -115,21 +115,20 @@ const LandingPage = ({ onGetStarted }) => {
   );
   
   const handleGetStarted = () => {
-    // Scroll to top before transitioning to dashboard
-    window.scrollTo(0, 0);
-    // Call the onGetStarted prop to transition to dashboard
-    onGetStarted();
+    if (onGetStarted) {
+      onGetStarted();
+    }
   };
   
   return (
-    <Box>
+    <Box sx={{ overflow: 'hidden' }}>
       {/* Hero Section */}
       <Box 
         sx={{ 
-          background: 'linear-gradient(135deg, #1976d2 0%, #512da8 100%)',
+          bgcolor: theme.palette.primary.main,
           color: 'white',
-          pt: { xs: 10, md: 15 },
-          pb: { xs: 12, md: 18 },
+          pt: 12,
+          pb: 8,
           position: 'relative',
           overflow: 'hidden'
         }}
@@ -172,7 +171,7 @@ const LandingPage = ({ onGetStarted }) => {
                   fontSize: { xs: '2.5rem', md: '3.5rem' }
                 }}
               >
-                Secure Your DeFi Assets with AI-Powered Monitoring
+                Flare Sense : DeFAI Security Agent
               </Typography>
               <Typography 
                 variant="h6" 
@@ -182,7 +181,7 @@ const LandingPage = ({ onGetStarted }) => {
                   opacity: 0.9
                 }}
               >
-                FlareSense provides real-time blockchain monitoring, security alerts, and AI-powered risk analysis to protect your digital assets.
+                FlareSense improves DeFi security by detecting risks, suggesting fixes, and sending live alerts. Using real-time security data, blockchain monitoring, RAG, and consensus learning to keep users and protocols safe.
               </Typography>
               <Button 
                 variant="contained" 
@@ -231,7 +230,7 @@ const LandingPage = ({ onGetStarted }) => {
               fontWeight: 'normal'
             }}
           >
-            Our comprehensive suite of tools helps you stay ahead of security threats and monitor your blockchain assets.
+            Our comprehensive suite of tools helps you stay ahead of security threats and monitor your blockchain assets with AI-powered insights.
           </Typography>
         </Box>
         
@@ -240,28 +239,52 @@ const LandingPage = ({ onGetStarted }) => {
             <FeatureCard 
               icon={<SecurityIcon fontSize="large" />}
               title="Smart Contract Analysis"
-              description="Analyze smart contracts for vulnerabilities and security risks before interacting with them."
+              description="Analyze smart contracts for vulnerabilities and security risks with detailed reports and actionable recommendations."
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <FeatureCard 
               icon={<MonitorIcon fontSize="large" />}
               title="Real-time Monitoring"
-              description="Monitor blockchain activity, whale movements, and unusual transactions in real-time."
+              description="Monitor blockchain activity, whale movements, and unusual transactions with customizable alerts for addresses and protocols."
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <FeatureCard 
               icon={<NotificationsActiveIcon fontSize="large" />}
-              title="Personalized Alerts"
-              description="Receive instant notifications about security threats affecting your monitored addresses and protocols."
+              title="Security Alerts"
+              description="Receive instant notifications about security threats, vulnerabilities, and DeFi security news affecting your assets."
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <FeatureCard 
               icon={<AnalyticsIcon fontSize="large" />}
-              title="Risk Analytics"
-              description="Get AI-powered insights and risk assessments to make informed decisions about your DeFi investments."
+              title="Risk Assessment"
+              description="Get AI-powered risk scores and detailed threat analysis for smart contracts, protocols, and addresses."
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={4} sx={{ mt: 2 }}>
+          <Grid item xs={12} sm={6} md={4}>
+            <FeatureCard 
+              icon={<Box component="span" sx={{ fontSize: '1.5rem' }}>🤖</Box>}
+              title="AI Chat Interface"
+              description="Interact with all features through a conversational AI interface using natural language commands."
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <FeatureCard 
+              icon={<Box component="span" sx={{ fontSize: '1.5rem' }}>📱</Box>}
+              title="Telegram Integration"
+              description="Manage alerts, monitor assets, and query risk scores directly through Telegram."
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <FeatureCard 
+              icon={<Box component="span" sx={{ fontSize: '1.5rem' }}>🔒</Box>}
+              title="Secure Execution"
+              description="All operations run in a Trusted Execution Environment (TEE) with attestation support."
             />
           </Grid>
         </Grid>

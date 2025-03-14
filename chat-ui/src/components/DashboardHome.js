@@ -143,14 +143,12 @@ const DashboardHome = () => {
 
   return (
     <Box>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-          Dashboard
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Welcome back! Here's an overview of your security monitoring.
-        </Typography>
-      </Box>
+      <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+        Dashboard
+      </Typography>
+      <Typography variant="body1" color="text.secondary" paragraph>
+        Welcome back! Here's an overview of your DeFi security monitoring and analysis tools. FlareSense provides comprehensive security features including smart contract analysis, risk assessment, real-time monitoring, and Telegram alerts.
+      </Typography>
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

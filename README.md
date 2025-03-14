@@ -1,43 +1,43 @@
-# Flare AI DeFAI
+# FlareSense: AI-Powered DeFi Security Platform
 
-Flare AI Kit template for AI x DeFi (DeFAI).
+DeFAI agent that improves DeFi security by detecting risks, suggesting fixes, and sending live alerts. It uses real-time security data, blockchain monitoring, RAG, and consensus learning to keep users and protocols safe.
 
-External IP: http://34.169.170.179/
+TEE External IP: http://34.169.170.179/
 GCP instance name: flare-sense
 
 Demo URL: https://flare-sense.up.railway.app
 
 ## Key Features
 
-- **Secure AI Execution**  
-  Runs within a Trusted Execution Environment (TEE) featuring remote attestation support for robust security.
+- **Smart Contract Security Analysis**  
+  Analyze smart contracts for vulnerabilities, code quality issues, and gas optimization opportunities. Get detailed reports with severity ratings, specific vulnerability locations, and actionable recommendations for fixes.
 
-- **Built-in Chat UI**  
-  Interact with your AI via a TEE-served chat interface.
+- **AI-Powered Risk Assessment**  
+  Evaluate the security posture of smart contracts, protocols, and blockchain addresses using advanced AI models with RAG knowledge and consensus learning. Receive comprehensive risk scores and detailed explanations of potential threats.
 
-- **Flare Blockchain and Wallet Integration**  
-  Perform token operations and generate wallets from within the TEE.
+- **Real-time Blockchain Monitoring**  
+  Monitor blockchain activity, track whale movements, detect unusual transactions, and receive security alerts in real-time. Set up custom monitoring for specific addresses and protocols of interest.
 
-- **Gemini 2.0 + over 300 LLMs supported**  
-  Utilize Google Gemini's latest model with structured query support for advanced AI functionalities.
-
-- **Smart Contract Analysis**  
-  Analyze smart contracts for vulnerabilities, code quality issues, and gas optimization opportunities.
-
-- **Risk Assessment**  
-  AI-powered risk assessment for smart contracts, protocols, and blockchain addresses using RAG knowledge and consensus learning.
-
-- **Blockchain & News Monitoring**  
-  Monitor blockchain activity, track whale movements, and receive security alerts in real-time.
+- **Security News & Vulnerability Alerts**  
+  Stay informed about the latest security incidents, vulnerabilities, and threats in the DeFi ecosystem. Receive timely notifications about issues that could affect your monitored assets.
 
 - **Telegram Bot Integration**  
-  Subscribe to real-time security alerts via Telegram, query contract risk scores, and get the latest DeFi security news.
+  Subscribe to real-time security alerts via Telegram, query contract risk scores, monitor addresses and protocols, and get the latest DeFi security news directly through the Telegram bot.
 
-<img width="500" alt="Artemis" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
+- **Unified Chat Interface**  
+  Interact with all FlareSense features through a conversational AI interface. Analyze contracts, set up monitoring, manage Telegram alerts, and more using natural language commands.
+
+- **Secure AI Execution**  
+  All operations run within a Trusted Execution Environment (TEE) featuring remote attestation support for robust security and privacy protection.
+
+- **Flare Blockchain Integration**  
+  Seamlessly interact with the Flare blockchain, perform token operations, and generate secure wallets from within the TEE.
+
+<img width="500" alt="FlareSense Dashboard" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
 
 ## Getting Started
 
-You can deploy Flare AI DeFAI using Docker (recommended) or set up the backend and frontend manually.
+You can deploy FlareSense using Docker (recommended) or set up the backend and frontend manually.
 
 ### Environment Setup
 
