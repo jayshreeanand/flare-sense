@@ -2,10 +2,81 @@
 
 DeFAI agent that improves DeFi security by detecting risks, suggesting fixes, and sending live alerts. It uses real-time security data, blockchain monitoring, RAG, and consensus learning to keep users and protocols safe.
 
+## System Architecture
+
+```mermaid
+graph TD
+    subgraph User_Interfaces
+        A[Web UI]
+        B[Telegram Bot]
+        C[Chat Interface]
+        A --> C
+        B --> C
+    end
+
+    subgraph Core_Services
+        D[AI Router]
+        E[Smart Contract Analyzer]
+        F[Risk Assessment Engine]
+        G[Blockchain Monitor]
+        H[Alert Service]
+        C --> D
+        D --> E
+        D --> F
+        D --> G
+        D --> H
+    end
+
+    subgraph Data_Sources
+        I[Blockchain Data]
+        J[Security News Feed]
+        K[RAG Knowledge Base]
+        I --> G
+        J --> H
+        K --> D
+    end
+
+    subgraph Secure_Execution
+        L[TEE Environment]
+        M[Remote Attestation]
+    end
+
+    subgraph External_Services
+        N[Flare Network]
+        O[Web3 Provider]
+        P[Gemini AI]
+    end
+
+    G --> H
+    E --> H
+    F --> H
+    H --> A
+    H --> B
+    D --> N
+    D --> O
+    D --> P
+    L --> D
+    M --> L
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef interface fill:#e1f5fe,stroke:#01579b;
+    classDef core fill:#e8f5e9,stroke:#1b5e20;
+    classDef data fill:#fff3e0,stroke:#e65100;
+    classDef secure fill:#fce4ec,stroke:#880e4f;
+    classDef external fill:#f3e5f5,stroke:#4a148c;
+
+    class A,B,C interface;
+    class D,E,F,G,H core;
+    class I,J,K data;
+    class L,M secure;
+    class N,O,P external;
+```
+
 TEE External IP: http://34.169.170.179/
 GCP instance name: flare-sense
 
 Demo URL: https://flare-sense.up.railway.app
+Docker Image: docker.io/jayshreeanand/flare-sense
 
 ## Key Features
 
