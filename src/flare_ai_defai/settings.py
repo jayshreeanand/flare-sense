@@ -52,6 +52,10 @@ class Settings(BaseSettings):
     news_api_key: str = Field(default="", alias="NEWS_API_KEY")
     webhook_url: str = Field(default="", alias="WEBHOOK_URL")
     enable_notifications: bool = Field(default=True, alias="ENABLE_NOTIFICATIONS")
+    
+    # Telegram bot settings
+    telegram_bot_token: str = Field(default="", alias="TELEGRAM_BOT_TOKEN")
+    enable_telegram_bot: bool = Field(default=False, alias="ENABLE_TELEGRAM_BOT")
 
     model_config = SettingsConfigDict(
         # This enables .env file support

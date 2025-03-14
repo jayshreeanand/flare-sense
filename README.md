@@ -28,6 +28,9 @@ GCP instance name: flare-sense
 - **Blockchain & News Monitoring**  
   Monitor blockchain activity, track whale movements, and receive security alerts in real-time.
 
+- **Telegram Bot Integration**  
+  Subscribe to real-time security alerts via Telegram, query contract risk scores, and get the latest DeFi security news.
+
 <img width="500" alt="Artemis" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
 
 ## Getting Started
@@ -105,6 +108,51 @@ Flare AI DeFAI is composed of a Python-based backend and a JavaScript frontend. 
    npm start
    ```
 
+## Telegram Bot Integration
+
+FlareSense includes a Telegram bot for real-time security alerts and blockchain monitoring.
+
+### Setup
+
+1. **Create a Telegram Bot:**
+
+   - Message [@BotFather](https://t.me/BotFather) on Telegram
+   - Use the `/newbot` command to create a new bot
+   - Follow the instructions to set a name and username
+   - Copy the API token provided by BotFather
+
+2. **Configure Environment Variables:**
+
+   - Add the following to your `.env` file:
+     ```
+     TELEGRAM_BOT_TOKEN=your_bot_token_here
+     ENABLE_TELEGRAM_BOT=true
+     ```
+
+3. **Start the Application:**
+   - The Telegram bot will automatically start when the application is launched
+   - Send `/start` to your bot on Telegram to begin
+
+### Bot Commands
+
+- `/start` - Get started with the bot
+- `/subscribe` - Subscribe to alerts
+- `/unsubscribe` - Unsubscribe from alerts
+- `/monitor_protocol <protocol>` - Monitor a specific protocol
+- `/monitor_address <address>` - Monitor a specific blockchain address
+- `/risk <contract_address>` - Get risk assessment for a contract
+- `/news` - Get the latest DeFi security news
+- `/help` - Show available commands
+
+### API Endpoints
+
+The following API endpoints are available for managing Telegram bot subscriptions:
+
+- `POST /api/routes/monitoring/telegram/subscribe` - Subscribe to alerts
+- `POST /api/routes/monitoring/telegram/unsubscribe` - Unsubscribe from alerts
+- `POST /api/routes/monitoring/telegram/monitor/protocol` - Monitor a protocol
+- `POST /api/routes/monitoring/telegram/monitor/address` - Monitor an address
+
 ## Common Errors and Solutions
 
 ### Import Error: Cannot import name 'ChatRouter' from 'flare_ai_defai.api'
@@ -176,6 +224,11 @@ src/flare_ai_defai/
 ├── blockchain/              # Blockchain operations
 │   ├── explorer.py        # Chain explorer client
 │   └── flare.py          # Flare network provider
+├── monitoring/              # Monitoring services
+│   ├── alert_service.py     # Alert management
+│   ├── blockchain_monitor.py # Blockchain activity monitoring
+│   ├── news_monitor.py      # Security news monitoring
+│   └── telegram_bot.py      # Telegram bot integration
 ├── prompts/              # AI system prompts & templates
 │    ├── library.py        # Prompt module library
 │    ├── schemas.py        # Schema definitions

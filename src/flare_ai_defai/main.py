@@ -38,6 +38,7 @@ from flare_ai_defai.monitoring import (
     AlertType,
     ConsoleAlertHandler,
     WebhookAlertHandler,
+    TelegramBotHandler,
 )
 from flare_ai_defai.settings import settings
 
@@ -47,11 +48,12 @@ logger = structlog.get_logger(__name__)
 alert_service = AlertService()
 blockchain_monitor = None
 news_monitor = None
+telegram_bot_handler = None
 
 
 async def initialize_monitoring_services():
     """Initialize and start the monitoring services."""
-    global blockchain_monitor, news_monitor
+    global blockchain_monitor, news_monitor, telegram_bot_handler
     
     logger.info("Initializing monitoring services")
     
@@ -75,6 +77,21 @@ async def initialize_monitoring_services():
         alert_service.register_handler(AlertType.WHALE_TRANSACTION, webhook_handler)
         alert_service.register_handler(AlertType.PROTOCOL_COMPROMISE, webhook_handler)
     
+    # Register Telegram bot handler if enabled and token is configured
+    if settings.enable_telegram_bot and settings.telegram_bot_token:
+        telegram_bot_handler = TelegramBotHandler(bot_token=settings.telegram_bot_token)
+        
+        # Register for all alert types
+        alert_service.register_handler(AlertType.WHALE_TRANSACTION, telegram_bot_handler)
+        alert_service.register_handler(AlertType.UNUSUAL_ACTIVITY, telegram_bot_handler)
+        alert_service.register_handler(AlertType.VULNERABLE_CONTRACT, telegram_bot_handler)
+        alert_service.register_handler(AlertType.SECURITY_NEWS, telegram_bot_handler)
+        alert_service.register_handler(AlertType.PROTOCOL_COMPROMISE, telegram_bot_handler)
+        
+        # Start polling for Telegram updates
+        await telegram_bot_handler.start_polling()
+        logger.info("Telegram bot handler initialized and polling started")
+    
     # Start monitoring services in background tasks
     asyncio.create_task(blockchain_monitor.start_monitoring(
         poll_interval=settings.monitoring_poll_interval
@@ -88,9 +105,14 @@ async def initialize_monitoring_services():
 
 async def shutdown_monitoring_services():
     """Shutdown the monitoring services."""
+    global telegram_bot_handler
+    
     logger.info("Shutting down monitoring services")
-    # In a real implementation, this would gracefully shut down the services
-    # For now, we just log the shutdown
+    
+    # Stop Telegram bot polling if it was started
+    if telegram_bot_handler is not None:
+        await telegram_bot_handler.stop_polling()
+        logger.info("Telegram bot polling stopped")
 
 
 @asynccontextmanager

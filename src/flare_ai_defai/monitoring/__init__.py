@@ -6,6 +6,7 @@ from .alert_service import (
     AlertService, AlertType, Alert, AlertSeverity,
     ConsoleAlertHandler, WebhookAlertHandler
 )
+from .telegram_bot import TelegramBotHandler
 
 __all__ = [
     "BlockchainMonitor", 
@@ -15,5 +16,6 @@ __all__ = [
     "Alert", 
     "AlertSeverity",
     "ConsoleAlertHandler",
-    "WebhookAlertHandler"
+    "WebhookAlertHandler",
+    "TelegramBotHandler"
 ] 

@@ -50,6 +50,26 @@ class AlertResponse(BaseModel):
     affected_addresses: List[str] = []
 
 
+class RegisterAddressRequest(BaseModel):
+    """Request model for registering an address for monitoring."""
+    
+    user_id: str = Field(..., description="User ID for tracking")
+    address: str = Field(..., description="Blockchain address to monitor")
+
+
+class RegisterProtocolRequest(BaseModel):
+    """Request model for registering a protocol for monitoring."""
+    
+    user_id: str = Field(..., description="User ID for tracking")
+    protocol: str = Field(..., description="Protocol name to monitor")
+
+
+class TelegramSubscriptionRequest(BaseModel):
+    """Request model for managing Telegram bot subscriptions."""
+    
+    chat_id: int = Field(..., description="Telegram chat ID")
+
+
 # Dependency to get service instances
 
 def get_alert_service() -> AlertService:
@@ -208,4 +228,132 @@ async def get_security_news(
         "status": "success",
         "message": "News monitoring active",
         "known_alerts_count": len(news_monitor.known_alerts),
-    } 
+    }
+
+
+@router.post("/telegram/subscribe")
+async def telegram_subscribe(request: TelegramSubscriptionRequest) -> dict:
+    """
+    Subscribe to Telegram alerts.
+    
+    Args:
+        request: The subscription request
+        
+    Returns:
+        Confirmation message
+    """
+    try:
+        from flare_ai_defai.main import telegram_bot_handler
+        
+        if telegram_bot_handler is None:
+            raise HTTPException(
+                status_code=400, 
+                detail="Telegram bot is not enabled. Set ENABLE_TELEGRAM_BOT=true and provide TELEGRAM_BOT_TOKEN in .env"
+            )
+        
+        telegram_bot_handler.subscribed_users.add(request.chat_id)
+        return {"status": "success", "message": "Subscribed to Telegram alerts"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error subscribing to Telegram", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to subscribe to Telegram: {str(e)}")
+
+
+@router.post("/telegram/unsubscribe")
+async def telegram_unsubscribe(request: TelegramSubscriptionRequest) -> dict:
+    """
+    Unsubscribe from Telegram alerts.
+    
+    Args:
+        request: The subscription request
+        
+    Returns:
+        Confirmation message
+    """
+    try:
+        from flare_ai_defai.main import telegram_bot_handler
+        
+        if telegram_bot_handler is None:
+            raise HTTPException(
+                status_code=400, 
+                detail="Telegram bot is not enabled. Set ENABLE_TELEGRAM_BOT=true and provide TELEGRAM_BOT_TOKEN in .env"
+            )
+        
+        telegram_bot_handler.subscribed_users.discard(request.chat_id)
+        return {"status": "success", "message": "Unsubscribed from Telegram alerts"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error unsubscribing from Telegram", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to unsubscribe from Telegram: {str(e)}")
+
+
+@router.post("/telegram/monitor/protocol")
+async def telegram_monitor_protocol(request: TelegramSubscriptionRequest, protocol: str) -> dict:
+    """
+    Register a protocol for monitoring via Telegram.
+    
+    Args:
+        request: The subscription request
+        protocol: The protocol to monitor
+        
+    Returns:
+        Confirmation message
+    """
+    try:
+        from flare_ai_defai.main import telegram_bot_handler
+        
+        if telegram_bot_handler is None:
+            raise HTTPException(
+                status_code=400, 
+                detail="Telegram bot is not enabled. Set ENABLE_TELEGRAM_BOT=true and provide TELEGRAM_BOT_TOKEN in .env"
+            )
+        
+        if request.chat_id not in telegram_bot_handler.user_protocols:
+            telegram_bot_handler.user_protocols[request.chat_id] = []
+        
+        if protocol not in telegram_bot_handler.user_protocols[request.chat_id]:
+            telegram_bot_handler.user_protocols[request.chat_id].append(protocol)
+        
+        return {"status": "success", "message": f"Now monitoring protocol: {protocol}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error monitoring protocol via Telegram", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to monitor protocol: {str(e)}")
+
+
+@router.post("/telegram/monitor/address")
+async def telegram_monitor_address(request: TelegramSubscriptionRequest, address: str) -> dict:
+    """
+    Register an address for monitoring via Telegram.
+    
+    Args:
+        request: The subscription request
+        address: The address to monitor
+        
+    Returns:
+        Confirmation message
+    """
+    try:
+        from flare_ai_defai.main import telegram_bot_handler
+        
+        if telegram_bot_handler is None:
+            raise HTTPException(
+                status_code=400, 
+                detail="Telegram bot is not enabled. Set ENABLE_TELEGRAM_BOT=true and provide TELEGRAM_BOT_TOKEN in .env"
+            )
+        
+        if request.chat_id not in telegram_bot_handler.user_addresses:
+            telegram_bot_handler.user_addresses[request.chat_id] = []
+        
+        if address not in telegram_bot_handler.user_addresses[request.chat_id]:
+            telegram_bot_handler.user_addresses[request.chat_id].append(address)
+        
+        return {"status": "success", "message": f"Now monitoring address: {address}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error monitoring address via Telegram", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to monitor address: {str(e)}") 
