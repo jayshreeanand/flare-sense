@@ -34,6 +34,9 @@ from flare_ai_defai.prompts.templates import (
     TOKEN_SEND,
     TOKEN_SWAP,
     TX_CONFIRMATION,
+    CONTRACT_ANALYSIS,
+    BLOCKCHAIN_MONITORING,
+    TELEGRAM_ALERTS,
 )
 
 logger = structlog.get_logger(__name__)
@@ -82,6 +85,9 @@ class PromptLibrary:
         - conversational: For general user interactions
         - request_attestation: For remote attestation requests
         - tx_confirmation: For transaction confirmation
+        - contract_analysis: For smart contract security analysis
+        - blockchain_monitoring: For blockchain monitoring setup
+        - telegram_alerts: For Telegram bot management
 
         This method is called automatically during instance initialization.
         """
@@ -148,6 +154,33 @@ class PromptLibrary:
                 response_schema=None,
                 response_mime_type=None,
                 category="account",
+            ),
+            Prompt(
+                name="contract_analysis",
+                description="Analyze a smart contract for security vulnerabilities",
+                template=CONTRACT_ANALYSIS,
+                required_inputs=["user_input"],
+                response_schema=None,
+                response_mime_type=None,
+                category="security",
+            ),
+            Prompt(
+                name="blockchain_monitoring",
+                description="Set up blockchain monitoring for addresses or protocols",
+                template=BLOCKCHAIN_MONITORING,
+                required_inputs=["user_input"],
+                response_schema=None,
+                response_mime_type=None,
+                category="monitoring",
+            ),
+            Prompt(
+                name="telegram_alerts",
+                description="Manage Telegram bot alerts and subscriptions",
+                template=TELEGRAM_ALERTS,
+                required_inputs=["user_input"],
+                response_schema=None,
+                response_mime_type=None,
+                category="monitoring",
             ),
         ]
 

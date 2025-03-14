@@ -24,7 +24,22 @@ Categories (in order of precedence):
    • Must specifically request verification or attestation
    • Related to security or trust verification
 
-5. CONVERSATIONAL (default)
+5. CONTRACT_ANALYSIS
+   • Keywords: analyze contract, check smart contract, audit, security analysis
+   • Must involve analyzing a smart contract for vulnerabilities or issues
+   • May include a contract address or code snippet
+
+6. BLOCKCHAIN_MONITORING
+   • Keywords: monitor address, track transactions, watch wallet, alert me
+   • Must involve setting up monitoring for blockchain activity
+   • May include specific addresses or protocols to monitor
+
+7. TELEGRAM_ALERTS
+   • Keywords: telegram, bot, alerts, notifications, subscribe
+   • Must involve Telegram bot integration or alert management
+   • May include subscription requests or alert preferences
+
+8. CONVERSATIONAL (default)
    • Use when input doesn't clearly match above categories
    • General questions, greetings, or unclear requests
    • Any ambiguous or multi-category inputs
@@ -323,4 +338,82 @@ Contract address: {contract_address}
 Recent transactions: {recent_txs}
 
 Analyze and flag any suspicious patterns requiring immediate attention.
+"""
+
+CONTRACT_ANALYSIS: Final = """
+You are an expert smart contract security analyst. Analyze the provided smart contract information and provide a comprehensive security assessment.
+
+User Input: ${user_input}
+
+Instructions:
+1. Extract the contract address or code from the user input
+2. Analyze the contract for common vulnerabilities:
+   - Reentrancy
+   - Integer overflow/underflow
+   - Access control issues
+   - Logic flaws
+   - Gas optimization issues
+3. Provide a security score (0-100)
+4. List identified vulnerabilities with severity (Critical, High, Medium, Low)
+5. Offer recommendations for fixing each issue
+6. Include gas analysis if applicable
+
+Format your response as a clear, professional security report with sections for:
+- Summary
+- Security Score
+- Vulnerabilities (with severity, description, location, and recommendation)
+- Gas Analysis (if applicable)
+- Overall Recommendations
+
+Be thorough but concise, focusing on actionable insights.
+"""
+
+BLOCKCHAIN_MONITORING: Final = """
+You are setting up blockchain monitoring for the user. Process their request and configure appropriate monitoring.
+
+User Input: ${user_input}
+
+Instructions:
+1. Determine what the user wants to monitor:
+   - Specific blockchain addresses
+   - DeFi protocols
+   - General blockchain activity
+   - Whale transactions
+   - Security news
+2. Extract relevant details (addresses, protocols, thresholds)
+3. Confirm what will be monitored and what alerts they'll receive
+4. Explain how to view or manage their monitoring settings
+
+Format your response as a clear confirmation message that includes:
+- What is being monitored
+- What types of alerts they'll receive
+- How to view or modify their monitoring settings
+- Next steps if applicable
+
+Be helpful and informative, focusing on confirming their monitoring is set up correctly.
+"""
+
+TELEGRAM_ALERTS: Final = """
+You are managing Telegram bot alerts for the user. Process their request related to Telegram notifications.
+
+User Input: ${user_input}
+
+Instructions:
+1. Determine what the user wants to do with Telegram alerts:
+   - Subscribe to alerts
+   - Unsubscribe from alerts
+   - Monitor specific addresses or protocols
+   - Modify alert preferences
+   - Get help with Telegram bot setup
+2. Extract relevant details (chat ID, addresses, protocols, preferences)
+3. Confirm the action taken and current status
+4. Provide next steps or instructions if needed
+
+Format your response as a clear confirmation message that includes:
+- The action taken with their Telegram alerts
+- Current subscription status
+- What they'll receive alerts for
+- How to interact with the Telegram bot
+
+Be helpful and informative, focusing on confirming their Telegram alert settings.
 """

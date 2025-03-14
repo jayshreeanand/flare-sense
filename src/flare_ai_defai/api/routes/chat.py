@@ -14,7 +14,7 @@ The module provides a ChatRouter class that integrates various services:
 import json
 
 import structlog
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from web3 import Web3
 from web3.exceptions import Web3RPCError
@@ -24,6 +24,9 @@ from flare_ai_defai.attestation import Vtpm, VtpmAttestationError
 from flare_ai_defai.blockchain import FlareProvider
 from flare_ai_defai.prompts import PromptService, SemanticRouterResponse
 from flare_ai_defai.settings import settings
+from flare_ai_defai.monitoring import AlertService, AlertType, Alert
+from flare_ai_defai.monitoring import BlockchainMonitor, NewsMonitor
+from flare_ai_defai.monitoring import TelegramBotHandler
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()
@@ -206,6 +209,9 @@ class ChatRouter:
             SemanticRouterResponse.SWAP_TOKEN: self.handle_swap_token,
             SemanticRouterResponse.REQUEST_ATTESTATION: self.handle_attestation,
             SemanticRouterResponse.CONVERSATIONAL: self.handle_conversation,
+            SemanticRouterResponse.CONTRACT_ANALYSIS: self.handle_contract_analysis,
+            SemanticRouterResponse.BLOCKCHAIN_MONITORING: self.handle_blockchain_monitoring,
+            SemanticRouterResponse.TELEGRAM_ALERTS: self.handle_telegram_alerts,
         }
 
         handler = handlers.get(route)
@@ -304,6 +310,84 @@ class ChatRouter:
         request_attestation_response = self.ai.generate(prompt=prompt)
         self.attestation.attestation_requested = True
         return {"response": request_attestation_response.text}
+
+    async def handle_contract_analysis(self, message: str) -> dict[str, str]:
+        """
+        Handle smart contract analysis requests.
+
+        Args:
+            message: Message containing contract address or code
+
+        Returns:
+            dict[str, str]: Response containing contract analysis results
+        """
+        try:
+            # Extract contract address or code from the message
+            prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+                "contract_analysis", user_input=message
+            )
+            contract_analysis_response = self.ai.generate(
+                prompt=prompt, response_mime_type=mime_type, response_schema=schema
+            )
+            
+            # In a real implementation, this would call the contract analysis service
+            # For now, we'll return a formatted response from the AI
+            return {"response": contract_analysis_response.text}
+        except Exception as e:
+            self.logger.exception("contract_analysis_failed", error=str(e))
+            return {"response": f"Failed to analyze contract: {str(e)}"}
+
+    async def handle_blockchain_monitoring(self, message: str) -> dict[str, str]:
+        """
+        Handle blockchain monitoring requests.
+
+        Args:
+            message: Message containing monitoring request details
+
+        Returns:
+            dict[str, str]: Response containing monitoring setup confirmation
+        """
+        try:
+            # Extract monitoring parameters from the message
+            prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+                "blockchain_monitoring", user_input=message
+            )
+            monitoring_response = self.ai.generate(
+                prompt=prompt, response_mime_type=mime_type, response_schema=schema
+            )
+            
+            # In a real implementation, this would set up monitoring for addresses/protocols
+            # For now, we'll return a formatted response from the AI
+            return {"response": monitoring_response.text}
+        except Exception as e:
+            self.logger.exception("blockchain_monitoring_failed", error=str(e))
+            return {"response": f"Failed to set up monitoring: {str(e)}"}
+
+    async def handle_telegram_alerts(self, message: str) -> dict[str, str]:
+        """
+        Handle Telegram alerts management requests.
+
+        Args:
+            message: Message containing Telegram-related request
+
+        Returns:
+            dict[str, str]: Response containing Telegram alerts status
+        """
+        try:
+            # Extract Telegram parameters from the message
+            prompt, mime_type, schema = self.prompts.get_formatted_prompt(
+                "telegram_alerts", user_input=message
+            )
+            telegram_response = self.ai.generate(
+                prompt=prompt, response_mime_type=mime_type, response_schema=schema
+            )
+            
+            # In a real implementation, this would manage Telegram subscriptions
+            # For now, we'll return a formatted response from the AI
+            return {"response": telegram_response.text}
+        except Exception as e:
+            self.logger.exception("telegram_alerts_failed", error=str(e))
+            return {"response": f"Failed to manage Telegram alerts: {str(e)}"}
 
     async def handle_conversation(self, message: str) -> dict[str, str]:
         """

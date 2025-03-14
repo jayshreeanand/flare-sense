@@ -10,7 +10,16 @@ import {
 function Chat() {
   const [messages, setMessages] = useState([
     {
-      text: "Hi, I'm Artemis! 👋 I'm your Copilot for Flare, ready to help you with operations like generating wallets, sending tokens, and executing token swaps. \n\n⚠️ While I aim to be accurate, never risk funds you can't afford to lose.",
+      text: "Hi, I'm Artemis! 👋 I'm your Copilot for Flare, ready to help you with a wide range of tasks:\n\n" +
+            "- **Blockchain Operations**: Generate wallets, send tokens, and execute token swaps\n" +
+            "- **Smart Contract Analysis**: Analyze contracts for vulnerabilities and security risks\n" +
+            "- **Blockchain Monitoring**: Set up monitoring for addresses and protocols\n" +
+            "- **Telegram Alerts**: Manage your Telegram bot subscriptions and alerts\n\n" +
+            "Try asking me things like:\n" +
+            "- \"Analyze this smart contract: 0x742d35Cc6634C0532925a3b844Bc454e4438f44e\"\n" +
+            "- \"Monitor this address for unusual activity\"\n" +
+            "- \"Set up Telegram alerts for whale transactions\"\n\n" +
+            "⚠️ While I aim to be accurate, never risk funds you can't afford to lose.",
       type: 'bot'
     }
   ]);

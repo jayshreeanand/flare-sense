@@ -31,6 +31,9 @@ class SemanticRouterResponse(str, Enum):
         SWAP_TOKEN: Route to token swapping workflow
         REQUEST_ATTESTATION: Route to attestation request handling
         CONVERSATIONAL: Route to general conversational response
+        CONTRACT_ANALYSIS: Route to smart contract analysis workflow
+        BLOCKCHAIN_MONITORING: Route to blockchain monitoring workflow
+        TELEGRAM_ALERTS: Route to Telegram alerts management
     """
 
     GENERATE_ACCOUNT = "GenerateAccount"
@@ -38,6 +41,9 @@ class SemanticRouterResponse(str, Enum):
     SWAP_TOKEN = "SwapToken"
     REQUEST_ATTESTATION = "RequestAttestation"
     CONVERSATIONAL = "Conversational"
+    CONTRACT_ANALYSIS = "ContractAnalysis"
+    BLOCKCHAIN_MONITORING = "BlockchainMonitoring"
+    TELEGRAM_ALERTS = "TelegramAlerts"
 
 
 class TokenSendResponse(TypedDict):
