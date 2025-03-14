@@ -104,7 +104,25 @@ Docker Image: docker.io/jayshreeanand/flare-sense
 - **Flare Blockchain Integration**  
   Seamlessly interact with the Flare blockchain, perform token operations, and generate secure wallets from within the TEE.
 
-<img width="500" alt="FlareSense Dashboard" src="https://github.com/user-attachments/assets/921fbfe2-9d52-496c-9b48-9dfc32a86208" />
+
+
+## Screenshots
+
+![1](https://github.com/user-attachments/assets/6c1610d2-50ae-4cc5-906a-2345956f2a76)
+
+![2](https://github.com/user-attachments/assets/f787f403-3b1a-4e42-873d-f35372e33bb7)
+
+![3](https://github.com/user-attachments/assets/aed8f484-3da3-435d-b0e6-c6e52fc691ed)
+
+![4](https://github.com/user-attachments/assets/ed449221-42af-4df9-896b-800729d2cf3e)
+
+![5](https://github.com/user-attachments/assets/de726d02-ea68-4013-8618-49154ae2c348)
+
+![6](https://github.com/user-attachments/assets/279b5d13-cd28-4fa5-9a9f-edecca1491d7)
+
+![7](https://github.com/user-attachments/assets/e71e1c40-66c5-4b2a-a49d-dd4dfa267697)
+
+![8](https://github.com/user-attachments/assets/1af6516c-a7d2-4ec8-b821-8a80260d2bbe)
 
 ## Getting Started
 
